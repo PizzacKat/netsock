@@ -109,8 +109,12 @@ namespace netsock {
 
 #if defined(__WIN32__) || defined(__WIN64__)
     typedef uint64_t socket_t;
+    typedef int retsize_t;
+    typedef int datsize_t;
 #elif defined(__unix__)
     typedef int socket_t;
+    typedef ssize_t retsize_t;
+    typedef size_t datsize_t;
 #endif
     inline socket_t invalid_socket = ~(socket_t)0;
 }

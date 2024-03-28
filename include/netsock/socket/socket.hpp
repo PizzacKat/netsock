@@ -28,14 +28,14 @@ namespace netsock {
         void connect(const endpoint &endpoint);
         void connect(const std::vector<ip_address> &addresses, unsigned short port);
 
-        int write(const char *data, int length, size_t offset = 0);
+        retsize_t write(const char *data, datsize_t length, size_t offset = 0);
         size_t write(const std::vector<char> &data);
-        int write_to(const endpoint &endpoint, const char *data, int length, size_t offset = 0);
+        retsize_t write_to(const endpoint &endpoint, const char *data, datsize_t length, size_t offset = 0);
         size_t write_to(const endpoint &endpoint, const std::vector<char> &data);
 
-        int read(char *out, int amount, size_t offset = 0);
+        retsize_t read(char *out, datsize_t amount, size_t offset = 0);
         std::vector<char> read(size_t amount);
-        int read_from(endpoint &endpoint, char *out, int amount, size_t offset = 0);
+        retsize_t read_from(endpoint &endpoint, char *out, datsize_t amount, size_t offset = 0);
         std::vector<char> read_from(endpoint &endpoint, size_t amount);
 
         template <typename T>
