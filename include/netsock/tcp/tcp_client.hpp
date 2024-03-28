@@ -12,6 +12,8 @@ namespace netsock {
         explicit tcp_client(address_family family);
         tcp_client(const std::string &address, unsigned short port);
         explicit tcp_client(socket &&client);
+        tcp_client(tcp_client &&) noexcept;
+        tcp_client &operator=(tcp_client &&) noexcept;
 
         static tcp_client create();
 
@@ -27,6 +29,8 @@ namespace netsock {
         network_stream &stream();
 
         void close();
+
+        ~tcp_client();
     private:
         socket m_client;
         network_stream m_stream;

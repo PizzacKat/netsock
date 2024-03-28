@@ -90,6 +90,7 @@ namespace netsock {
         m_type = socket.m_type;
         m_protocol = socket.m_protocol;
         m_listening = socket.m_listening;
+        m_closed = socket.m_closed;
         socket.m_socket = netsock::invalid_socket;
         socket.m_connected = false;
         socket.m_listening = false;
@@ -107,6 +108,7 @@ namespace netsock {
         m_type = socket.m_type;
         m_protocol = socket.m_protocol;
         m_listening = socket.m_listening;
+        m_closed = socket.m_closed;
         socket.m_socket = netsock::invalid_socket;
         socket.m_connected = false;
         socket.m_listening = false;
@@ -408,13 +410,16 @@ namespace netsock {
     }
 
     void socket::close() {
+        if (!closed()) {
 #if defined(__WIN32__) || defined(__WIN64__)
-        closesocket(handle());
+            closesocket(handle());
 #elif defined(__unix__)
-        ::close(handle());
+            ::close(handle());
 #endif
+        }
         m_connected = false;
         m_listening = false;
+        m_closed = true;
     }
 
     bool socket::valid() const{
@@ -439,6 +444,10 @@ namespace netsock {
 
     bool socket::listening() const {
         return m_listening;
+    }
+
+    bool socket::closed() const {
+        return m_closed;
     }
 
     endpoint socket::local_endpoint() const {
@@ -496,5 +505,9 @@ namespace netsock {
     void socket::update_after_error(int code, bool disconnect) {
         if (disconnect && m_connected && (handle() == netsock::invalid_socket || (code != socket_error::WOULDBLOCK && code != socket_error::NOBUFS && code != socket_error::TIMEDOUT)))
             m_connected = false;
+    }
+
+    socket::~socket() {
+        close();
     }
 }

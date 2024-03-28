@@ -108,12 +108,14 @@ namespace netsock {
         [[nodiscard]] ip_protocol protocol() const;
         [[nodiscard]] bool connected() const;
         [[nodiscard]] bool listening() const;
+        [[nodiscard]] bool closed() const;
         [[nodiscard]] endpoint local_endpoint() const;
         [[nodiscard]] endpoint remote_endpoint() const;
         [[nodiscard]] bool poll(ssize_t timeout, poll_mode mode);
 
         bool operator==(const socket &socket) const;
 
+        ~socket();
     private:
         [[nodiscard]] socket_address serialize(const endpoint &endpoint) const;
         void update_after_error(int code, bool disconnect = true);
@@ -126,6 +128,7 @@ namespace netsock {
         endpoint m_remoteEndpoint{};
         bool m_connected = false;
         bool m_listening = false;
+        bool m_closed = false;
     };
 }
 

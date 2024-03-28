@@ -22,6 +22,15 @@ namespace netsock {
 
     }
 
+    tcp_client::tcp_client(tcp_client &&client) noexcept: m_client(std::move(client.m_client)), m_stream(m_client) {
+
+    }
+
+    tcp_client &tcp_client::operator=(tcp_client &&client) noexcept {
+        m_client = std::move(client.m_client);
+        return *this;
+    }
+
     void tcp_client::connect(const netsock::ip_address &address, unsigned short port) {
         m_client.connect(address, port);
     }
@@ -63,5 +72,9 @@ namespace netsock {
 
     tcp_client tcp_client::create() {
         return tcp_client(socket(socket_type::stream, ip_protocol::tcp));
+    }
+
+    tcp_client::~tcp_client() {
+        close();
     }
 }
