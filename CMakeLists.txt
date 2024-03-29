@@ -18,20 +18,19 @@ add_library(${PROJECT_NAME}
         include/netsock/dns.hpp
         include/netsock/endian.hpp
         include/netsock/errors.hpp
-        include/netsock/network_stream.hpp
         include/netsock/tcp/tcp_listener.hpp
         include/netsock/socket_address.hpp
         include/netsock/ip_endpoint.hpp
         src/endian.cpp
         src/tcp_client.cpp
-        src/network_stream.cpp
         src/socket_address.cpp
         src/ip_endpoint.cpp
         src/tcp_listener.cpp
         include/netsock/endpoint.hpp
         src/endpoint.cpp
         include/netsock/select_list.hpp
-        src/select_list.cpp)
+        src/select_list.cpp
+        include/netsock/udp/udp_client.hpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 

@@ -9,7 +9,6 @@
 #include "netsock/tcp/tcp_listener.hpp"
 #include "ip_address.hpp"
 #include "types.hpp"
-#include "network_stream.hpp"
 #include "endpoint.hpp"
 #include "ip_endpoint.hpp"
 #include "socket_address.hpp"

@@ -2,7 +2,6 @@
 #define NETSOCK_TCP_CLIENT_HPP
 
 #include "netsock/socket/socket.hpp"
-#include "netsock/network_stream.hpp"
 #include <vector>
 
 namespace netsock {
@@ -26,14 +25,17 @@ namespace netsock {
         [[nodiscard]] const socket &client() const;
         socket &client();
 
-        network_stream &stream();
+        retsize_t write(const char *data, datsize_t length, size_t offset = 0);
+        size_t write(const std::vector<char> &data);
+
+        retsize_t read(char *out, datsize_t amount, size_t offset = 0);
+        std::vector<char> read(size_t amount);
 
         void close();
 
         ~tcp_client();
     private:
         socket m_client;
-        network_stream m_stream;
         friend class tcp_listener;
     };
 }

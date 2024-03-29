@@ -60,8 +60,20 @@ namespace netsock {
         return m_client;
     }
 
-    network_stream &tcp_client::stream() {
-        return m_stream;
+    retsize_t tcp_client::write(const char *data, netsock::datsize_t length, size_t offset) {
+        return client().write(data, length, offset);
+    }
+
+    size_t tcp_client::write(const std::vector<char> &data) {
+        return client().write(data);
+    }
+
+    retsize_t tcp_client::read(char *out, netsock::datsize_t amount, size_t offset) {
+        return client().read(out, amount, offset);
+    }
+
+    std::vector<char> tcp_client::read(size_t amount) {
+        return client().read(amount);
     }
 
     void tcp_client::close(){
