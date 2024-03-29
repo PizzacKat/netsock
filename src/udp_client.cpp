@@ -13,8 +13,12 @@ namespace netsock {
 
     }
 
-    udp_client::udp_client(unsigned short port): udp_client(netsock::socket(socket_type::dgram, ip_protocol::udp)) {
-        client().bind(ip_endpoint(ip_address("0.0.0.0"), port));
+    udp_client::udp_client(unsigned short port): udp_client(ip_endpoint(ip_address("0.0.0.0"), port)) {
+
+    }
+
+    udp_client::udp_client(const ip_endpoint &endpoint): udp_client(netsock::socket(socket_type::dgram, ip_protocol::udp)) {
+        client().bind(endpoint);
     }
 
     udp_client::udp_client(socket &&client): m_client(std::move(client)) {
