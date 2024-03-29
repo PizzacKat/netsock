@@ -30,7 +30,10 @@ add_library(${PROJECT_NAME}
         src/endpoint.cpp
         include/netsock/select_list.hpp
         src/select_list.cpp
-        include/netsock/udp/udp_client.hpp)
+        include/netsock/udp/udp_client.hpp
+        src/udp_client.cpp
+        include/netsock/udp/udp_server.hpp
+        src/udp_server.cpp)
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 

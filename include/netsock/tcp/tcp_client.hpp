@@ -27,7 +27,6 @@ namespace netsock {
 
         retsize_t write(const char *data, datsize_t length, size_t offset = 0);
         size_t write(const std::vector<char> &data);
-
         retsize_t read(char *out, datsize_t amount, size_t offset = 0);
         std::vector<char> read(size_t amount);
 

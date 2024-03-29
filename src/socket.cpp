@@ -4,7 +4,6 @@
 #include <climits>
 #include <csignal>
 #include <algorithm>
-#include "netsock/ip_endpoint.hpp"
 
 #if defined(__WIN32__) || defined(__WIN64__)
 class autoinit {
@@ -133,7 +132,11 @@ namespace netsock {
     }
 
     retsize_t socket::write(const char *data, datsize_t length, size_t offset) {
+#if defined(__WIN32__) || defined(__WIN64__)
         auto res = send(handle(), data + offset, length, 0);
+#else
+        auto res = send(handle(), data + offset, length, MSG_NOSIGNAL);
+#endif
         if (res == -1){
             int err = LAST_ERROR();
             update_after_error(err);
@@ -154,7 +157,25 @@ namespace netsock {
 
     retsize_t socket::write_to(const endpoint &endpoint, const char *data, datsize_t length, size_t offset) {
         socket_address address = serialize(endpoint);
+#if defined(__WIN32__) || defined(__WIN64__)
         auto res = sendto(handle(), data + offset, length, 0, (sockaddr *)address.data(), (int)address.size());
+#else
+        auto res = sendto(handle(), data + offset, length, MSG_NOSIGNAL, (sockaddr *)address.data(), (int)address.size());
+#endif
+        if (res == -1){
+            int err = LAST_ERROR();
+            update_after_error(err);
+            throw socket_exception(err, "sendto");
+        }
+        return res;
+    }
+
+    retsize_t socket::write_to(const char *data, datsize_t length, size_t offset) {
+#if defined(__WIN32__) || defined(__WIN64__)
+        auto res = sendto(handle(), data + offset, length, 0, nullptr, 0);
+#else
+        auto res = sendto(handle(), data + offset, length, MSG_NOSIGNAL, nullptr, 0);
+#endif
         if (res == -1){
             int err = LAST_ERROR();
             update_after_error(err);
@@ -167,6 +188,16 @@ namespace netsock {
         size_t sent = 0;
         while (sent < data.size()) {
             auto res = write_to(endpoint, data.data(), (int) std::min(data.size() - sent, (size_t) INT_MAX), sent);
+            sent += res;
+            if (res != INT_MAX) break;
+        }
+        return sent;
+    }
+
+    size_t socket::write_to(const std::vector<char> &data) {
+        size_t sent = 0;
+        while (sent < data.size()) {
+            auto res = write_to(data.data(), (int) std::min(data.size() - sent, (size_t) INT_MAX), sent);
             sent += res;
             if (res != INT_MAX) break;
         }
@@ -196,7 +227,7 @@ namespace netsock {
         return {data.begin(), data.begin() + (signed)received};
     }
 
-    retsize_t socket::read_from(endpoint &endpoint, char *out, datsize_t amount, size_t offset) {
+    retsize_t socket::read_from(ip_endpoint &endpoint, char *out, datsize_t amount, size_t offset) {
         socket_address storage(family());
         auto len = (socklen_t)storage.size();
         auto res = recvfrom(handle(), out + offset, amount, 0, (sockaddr *)storage.data(), &len);
@@ -211,9 +242,25 @@ namespace netsock {
         return res;
     }
 
-    std::vector<char> socket::read_from(endpoint &endpoint, size_t amount) {
+    retsize_t socket::read_from(char *out, datsize_t amount, size_t offset) {
+        auto res = recvfrom(handle(), out + offset, amount, 0, nullptr, nullptr);
+        if (res == -1){
+            int err = LAST_ERROR();
+            update_after_error(err);
+            throw socket_exception(err, "recvfrom");
+        }
+        return res;
+    }
+
+    std::vector<char> socket::read_from(ip_endpoint &endpoint, size_t amount) {
         std::vector<char> data(amount);
         auto res = read_from(endpoint, data.data(), (int) amount);
+        return {data.begin(), data.begin() + res};
+    }
+
+    std::vector<char> socket::read_from(size_t amount) {
+        std::vector<char> data(amount);
+        auto res = read_from(data.data(), (int) amount);
         return {data.begin(), data.begin() + res};
     }
 

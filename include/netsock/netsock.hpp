@@ -1,12 +1,14 @@
 #ifndef NETSOCK_NETSOCK_HPP
 #define NETSOCK_NETSOCK_HPP
 
-#include "netsock/socket/socket.hpp"
+#include "socket/socket.hpp"
 #include "dns.hpp"
 #include "endian.hpp"
 #include "errors.hpp"
-#include "netsock/tcp/tcp_client.hpp"
-#include "netsock/tcp/tcp_listener.hpp"
+#include "tcp/tcp_client.hpp"
+#include "tcp/tcp_listener.hpp"
+#include "udp/udp_client.hpp"
+#include "udp/udp_server.hpp"
 #include "ip_address.hpp"
 #include "types.hpp"
 #include "endpoint.hpp"

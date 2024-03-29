@@ -5,11 +5,11 @@
 #include "netsock/errors.hpp"
 
 namespace netsock {
-    tcp_client::tcp_client(): m_client(invalid_socket), m_stream(m_client){
+    tcp_client::tcp_client(): m_client(invalid_socket) {
 
     }
 
-    tcp_client::tcp_client(netsock::address_family family): m_client(family, socket_type::stream, tcp), m_stream(m_client){
+    tcp_client::tcp_client(netsock::address_family family): m_client(family, socket_type::stream, tcp) {
 
     }
 
@@ -18,11 +18,11 @@ namespace netsock {
         connect(addresses, port);
     }
 
-    tcp_client::tcp_client(socket &&client): m_client(std::move(client)), m_stream(m_client){
+    tcp_client::tcp_client(socket &&client): m_client(std::move(client)) {
 
     }
 
-    tcp_client::tcp_client(tcp_client &&client) noexcept: m_client(std::move(client.m_client)), m_stream(m_client) {
+    tcp_client::tcp_client(tcp_client &&client) noexcept: m_client(std::move(client.m_client)) {
 
     }
 
