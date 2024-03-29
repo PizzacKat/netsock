@@ -10,8 +10,10 @@ namespace netsock {
     public:
         udp_client();
         explicit udp_client(address_family family);
-        udp_client(unsigned short port);
+        explicit udp_client(unsigned short port);
         explicit udp_client(socket &&client);
+        udp_client(udp_client &&) noexcept ;
+        udp_client &operator=(udp_client &&client) noexcept ;
 
         static udp_client create();
 

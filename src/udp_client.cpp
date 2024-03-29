@@ -21,6 +21,15 @@ namespace netsock {
 
     }
 
+    udp_client::udp_client(netsock::udp_client &&) noexcept= default;
+
+    udp_client &udp_client::operator=(netsock::udp_client &&client) noexcept {
+        if (m_client.connected())
+            m_client.close();
+        m_client = std::move(client.client());
+        return *this;
+    }
+
     void udp_client::connect(const netsock::ip_address &address, unsigned short port) {
         client().connect(address, port);
     }
