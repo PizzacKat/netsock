@@ -1,22 +1,22 @@
-#ifndef NETSOCK_UDP_CLIENT_HPP
-#define NETSOCK_UDP_CLIENT_HPP
+#ifndef NETSOCK_UDP_CONNECTION_HPP
+#define NETSOCK_UDP_CONNECTION_HPP
 
 #include "netsock/socket/socket.hpp"
 #include "netsock/ip_endpoint.hpp"
 #include <vector>
 
 namespace netsock {
-    class udp_client {
+    class udp_connection {
     public:
-        udp_client();
-        explicit udp_client(address_family family);
-        explicit udp_client(unsigned short port);
-        explicit udp_client(const ip_endpoint &endpoint);
-        explicit udp_client(socket &&client);
-        udp_client(udp_client &&client) noexcept;
-        udp_client &operator=(udp_client &&client) noexcept;
+        udp_connection();
+        explicit udp_connection(address_family family);
+        explicit udp_connection(unsigned short port);
+        explicit udp_connection(const ip_endpoint &endpoint);
+        explicit udp_connection(netsock::socket &&socket);
+        udp_connection(udp_connection &&connection) noexcept;
+        udp_connection &operator=(udp_connection &&connection) noexcept;
 
-        static udp_client create();
+        static udp_connection create();
 
         void connect(const ip_address &address, unsigned short port);
         void connect(const std::vector<ip_address> &addresses, unsigned short port);
@@ -24,8 +24,8 @@ namespace netsock {
         [[nodiscard]] bool connected() const;
         [[nodiscard]] bool pending();
 
-        [[nodiscard]] const socket &client() const;
-        socket &client();
+        [[nodiscard]] const netsock::socket &socket() const;
+        netsock::socket &socket();
 
         retsize_t write(const char *data, datsize_t length, size_t offset = 0);
         size_t write(const std::vector<char> &data);
@@ -34,19 +34,15 @@ namespace netsock {
 
         retsize_t write_to(const ip_endpoint &endpoint, const char *data, datsize_t length, size_t offset = 0);
         size_t write_to(const ip_endpoint &endpoint, const std::vector<char> &data);
-        retsize_t write_to(const char *data, datsize_t length, size_t offset = 0);
-        size_t write_to(const std::vector<char> &data);
         retsize_t read_from(ip_endpoint &endpoint, char *out, datsize_t amount, size_t offset = 0);
         std::vector<char> read_from(ip_endpoint &endpoint, size_t amount);
-        retsize_t read_from(char *out, datsize_t amount, size_t offset = 0);
-        std::vector<char> read_from(size_t amount);
 
         void close();
 
-        ~udp_client();
+        ~udp_connection();
     private:
-        socket m_client;
+        netsock::socket m_socket;
     };
 }
 
-#endif //NETSOCK_UDP_CLIENT_HPP
+#endif //NETSOCK_UDP_CONNECTION_HPP

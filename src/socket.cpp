@@ -170,34 +170,10 @@ namespace netsock {
         return res;
     }
 
-    retsize_t socket::write_to(const char *data, datsize_t length, size_t offset) {
-#if defined(__WIN32__) || defined(__WIN64__)
-        auto res = sendto(handle(), data + offset, length, 0, nullptr, 0);
-#else
-        auto res = sendto(handle(), data + offset, length, MSG_NOSIGNAL, nullptr, 0);
-#endif
-        if (res == -1){
-            int err = LAST_ERROR();
-            update_after_error(err);
-            throw socket_exception(err, "sendto");
-        }
-        return res;
-    }
-
     size_t socket::write_to(const endpoint &endpoint, const std::vector<char> &data) {
         size_t sent = 0;
         while (sent < data.size()) {
             auto res = write_to(endpoint, data.data(), (int) std::min(data.size() - sent, (size_t) INT_MAX), sent);
-            sent += res;
-            if (res != INT_MAX) break;
-        }
-        return sent;
-    }
-
-    size_t socket::write_to(const std::vector<char> &data) {
-        size_t sent = 0;
-        while (sent < data.size()) {
-            auto res = write_to(data.data(), (int) std::min(data.size() - sent, (size_t) INT_MAX), sent);
             sent += res;
             if (res != INT_MAX) break;
         }
@@ -242,25 +218,9 @@ namespace netsock {
         return res;
     }
 
-    retsize_t socket::read_from(char *out, datsize_t amount, size_t offset) {
-        auto res = recvfrom(handle(), out + offset, amount, 0, nullptr, nullptr);
-        if (res == -1){
-            int err = LAST_ERROR();
-            update_after_error(err);
-            throw socket_exception(err, "recvfrom");
-        }
-        return res;
-    }
-
     std::vector<char> socket::read_from(ip_endpoint &endpoint, size_t amount) {
         std::vector<char> data(amount);
         auto res = read_from(endpoint, data.data(), (int) amount);
-        return {data.begin(), data.begin() + res};
-    }
-
-    std::vector<char> socket::read_from(size_t amount) {
-        std::vector<char> data(amount);
-        auto res = read_from(data.data(), (int) amount);
         return {data.begin(), data.begin() + res};
     }
 

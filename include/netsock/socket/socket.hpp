@@ -32,16 +32,12 @@ namespace netsock {
         retsize_t write(const char *data, datsize_t length, size_t offset = 0);
         size_t write(const std::vector<char> &data);
         retsize_t write_to(const endpoint &endpoint, const char *data, datsize_t length, size_t offset = 0);
-        retsize_t write_to(const char *data, datsize_t length, size_t offset = 0);
         size_t write_to(const endpoint &endpoint, const std::vector<char> &data);
-        size_t write_to(const std::vector<char> &data);
 
         retsize_t read(char *out, datsize_t amount, size_t offset = 0);
         std::vector<char> read(size_t amount);
         retsize_t read_from(ip_endpoint &endpoint, char *out, datsize_t amount, size_t offset = 0);
-        retsize_t read_from(char *out, datsize_t amount, size_t offset = 0);
         std::vector<char> read_from(ip_endpoint &endpoint, size_t amount);
-        std::vector<char> read_from(size_t amount);
 
         template <typename T>
         void set_option(int level, int option, const T &value){

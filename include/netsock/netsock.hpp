@@ -7,7 +7,7 @@
 #include "errors.hpp"
 #include "tcp/tcp_client.hpp"
 #include "tcp/tcp_listener.hpp"
-#include "udp/udp_client.hpp"
+#include "udp/udp_connection.hpp"
 #include "udp/udp_server.hpp"
 #include "ip_address.hpp"
 #include "types.hpp"
