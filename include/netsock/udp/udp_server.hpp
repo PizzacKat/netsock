@@ -9,6 +9,8 @@ namespace netsock {
         udp_server(const std::string &address, unsigned short port);
         explicit udp_server(const ip_endpoint &endpoint);
         udp_server(address_family family, const ip_endpoint &endpoint);
+        udp_server(udp_server &&server) noexcept;
+        udp_server &operator=(udp_server &&server) noexcept;
 
         [[nodiscard]] const socket &server() const;
         socket &server();

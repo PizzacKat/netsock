@@ -13,6 +13,15 @@ namespace netsock {
         m_server.bind(endpoint);
     }
 
+    udp_server::udp_server(netsock::udp_server &&server) noexcept= default;
+
+    udp_server &udp_server::operator=(netsock::udp_server &&server) noexcept {
+        if (m_server.valid())
+            m_server.close();
+        m_server = std::move(server.server());
+        return *this;
+    }
+
     const socket &udp_server::server() const {
         return m_server;
     }

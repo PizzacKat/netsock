@@ -13,8 +13,8 @@ namespace netsock {
         explicit udp_client(unsigned short port);
         explicit udp_client(const ip_endpoint &endpoint);
         explicit udp_client(socket &&client);
-        udp_client(udp_client &&) noexcept ;
-        udp_client &operator=(udp_client &&client) noexcept ;
+        udp_client(udp_client &&client) noexcept;
+        udp_client &operator=(udp_client &&client) noexcept;
 
         static udp_client create();
 

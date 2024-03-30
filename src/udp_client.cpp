@@ -28,7 +28,7 @@ namespace netsock {
     udp_client::udp_client(netsock::udp_client &&) noexcept= default;
 
     udp_client &udp_client::operator=(netsock::udp_client &&client) noexcept {
-        if (m_client.connected())
+        if (m_client.valid())
             m_client.close();
         m_client = std::move(client.client());
         return *this;
