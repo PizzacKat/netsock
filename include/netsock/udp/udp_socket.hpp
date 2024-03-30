@@ -18,9 +18,13 @@ namespace netsock {
 
         static udp_socket create();
 
+        void connect(const ip_endpoint &endpoint);
         void connect(const ip_address &address, unsigned short port);
         void connect(const std::vector<ip_address> &addresses, unsigned short port);
         void connect(const std::string &address, unsigned short port);
+        void bind(const ip_endpoint &endpoint);
+        void bind(const ip_address &address, unsigned short port);
+        void bind(const std::string &address, unsigned short port);
         [[nodiscard]] bool connected() const;
         [[nodiscard]] bool pending();
 

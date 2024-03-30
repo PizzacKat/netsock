@@ -34,6 +34,10 @@ namespace netsock {
         return *this;
     }
 
+    void udp_socket::connect(const netsock::ip_endpoint &endpoint) {
+        socket().connect(endpoint);
+    }
+
     void udp_socket::connect(const netsock::ip_address &address, unsigned short port) {
         socket().connect(address, port);
     }
@@ -45,6 +49,18 @@ namespace netsock {
     void udp_socket::connect(const std::string &address, unsigned short port) {
         auto addresses = dns::getHostAddresses(address);
         connect(addresses, port);
+    }
+
+    void udp_socket::bind(const netsock::ip_endpoint &endpoint) {
+        socket().bind(endpoint);
+    }
+
+    void udp_socket::bind(const netsock::ip_address &address, unsigned short port) {
+        bind(ip_endpoint(address, port));
+    }
+
+    void udp_socket::bind(const std::string &address, unsigned short port) {
+        bind(ip_address(address), port);
     }
 
     [[nodiscard]] bool udp_socket::connected() const {
