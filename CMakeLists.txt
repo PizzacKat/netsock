@@ -30,7 +30,7 @@ add_library(${PROJECT_NAME}
         src/endpoint.cpp
         include/netsock/select_list.hpp
         src/select_list.cpp
-        include/netsock/udp/udp_connection.hpp
+        include/netsock/udp/udp_socket.hpp
         src/udp_connection.cpp
 )
 

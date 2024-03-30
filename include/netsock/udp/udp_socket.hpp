@@ -1,22 +1,22 @@
-#ifndef NETSOCK_UDP_CONNECTION_HPP
-#define NETSOCK_UDP_CONNECTION_HPP
+#ifndef NETSOCK_UDP_SOCKET_HPP
+#define NETSOCK_UDP_SOCKET_HPP
 
 #include "netsock/socket/socket.hpp"
 #include "netsock/ip_endpoint.hpp"
 #include <vector>
 
 namespace netsock {
-    class udp_connection {
+    class udp_socket {
     public:
-        udp_connection();
-        explicit udp_connection(address_family family);
-        explicit udp_connection(unsigned short port);
-        explicit udp_connection(const ip_endpoint &endpoint);
-        explicit udp_connection(netsock::socket &&socket);
-        udp_connection(udp_connection &&connection) noexcept;
-        udp_connection &operator=(udp_connection &&connection) noexcept;
+        udp_socket();
+        explicit udp_socket(address_family family);
+        explicit udp_socket(unsigned short port);
+        explicit udp_socket(const ip_endpoint &endpoint);
+        explicit udp_socket(netsock::socket &&socket);
+        udp_socket(udp_socket &&connection) noexcept;
+        udp_socket &operator=(udp_socket &&connection) noexcept;
 
-        static udp_connection create();
+        static udp_socket create();
 
         void connect(const ip_address &address, unsigned short port);
         void connect(const std::vector<ip_address> &addresses, unsigned short port);
@@ -39,10 +39,10 @@ namespace netsock {
 
         void close();
 
-        ~udp_connection();
+        ~udp_socket();
     private:
         netsock::socket m_socket;
     };
 }
 
-#endif //NETSOCK_UDP_CONNECTION_HPP
+#endif //NETSOCK_UDP_SOCKET_HPP
