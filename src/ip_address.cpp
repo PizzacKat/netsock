@@ -241,8 +241,8 @@ namespace netsock {
         return false;
     }
 
-    ip_address ip_address::any{0x00000000};
-    ip_address ip_address::loopback{0x1000007F};
-    ip_address ip_address::any6{std::vector<unsigned short>{0, 0, 0, 0, 0, 0, 0, 0}, 0};
-    ip_address ip_address::loopback6{std::vector<unsigned short>{0, 0, 0, 0, 0, 0, 0, 1}, 0};
+    ip_address ip_address::any{"0.0.0.0"};
+    ip_address ip_address::loopback{"127.0.0.1"};
+    ip_address ip_address::any6{"::"};
+    ip_address ip_address::loopback6{"::1"};
 }
