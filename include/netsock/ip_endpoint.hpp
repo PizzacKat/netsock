@@ -16,6 +16,8 @@ namespace netsock {
 
         static ip_endpoint parse(const std::string &string);
 
+        bool operator==(const ip_endpoint &endpoint) const;
+
         ip_address address;
         unsigned short port;
     };

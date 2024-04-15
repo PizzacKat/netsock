@@ -50,6 +50,14 @@ namespace netsock {
         [[nodiscard]] unsigned int scopeId() const;
         [[nodiscard]] bool ipv4_mapped_ipv6() const;
 
+        bool operator==(const ip_address &address) const;
+
+        static ip_address any;
+        static ip_address loopback;
+        static ip_address broadcast;
+
+        static ip_address any6;
+        static ip_address loopback6;
     private:
         inline void writeBytesIPv6(char *out) const;
 

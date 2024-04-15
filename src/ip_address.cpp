@@ -226,4 +226,23 @@ namespace netsock {
                 return false;
         return m_values[5] == 0xFFFF;
     }
+
+    bool ip_address::operator==(const ip_address &address) const {
+        if (address.family() != family())
+            return false;
+        if (family() == inet)
+            return address.address() == this->address();
+        if (family() == inet6) {
+            for (size_t i = 0; i < 8; i++)
+                if (address.m_values[i] != m_values[i])
+                    return false;
+            return true;
+        }
+        return false;
+    }
+
+    ip_address ip_address::any{0x00000000};
+    ip_address ip_address::loopback{0x1000007F};
+    ip_address ip_address::any6{std::vector<unsigned short>{0, 0, 0, 0, 0, 0, 0, 0}, 0};
+    ip_address ip_address::loopback6{std::vector<unsigned short>{0, 0, 0, 0, 0, 0, 0, 1}, 0};
 }

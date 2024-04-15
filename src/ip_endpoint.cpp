@@ -49,4 +49,8 @@ namespace netsock {
             return {ip_address(string.substr(1, separator - 2)), port};
         return {ip_address(string.substr(0, separator)), port};
     }
+
+    bool ip_endpoint::operator==(const ip_endpoint &endpoint) const {
+        return endpoint.address == address && endpoint.port == port;
+    }
 }
