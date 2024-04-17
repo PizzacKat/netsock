@@ -106,8 +106,6 @@ namespace netsock {
     }
 
     void socket::connect(const netsock::endpoint &endpoint) {
-        if (m_connected)
-            throw invalid_operation("Socket already connected");
         socket_address address = serialize(endpoint);
         int res = ::connect(handle(), (sockaddr *)address.data(), (int)address.size());
         if (res == -1){
