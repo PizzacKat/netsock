@@ -1,0 +1,4 @@
+#ifndef NETSOCK_BASE_HPP
+#define NETSOCK_BASE_HPP
+
+#endif //NETSOCK_BASE_HPP

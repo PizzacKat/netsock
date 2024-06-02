@@ -1,0 +1,4 @@
+#ifndef NETSOCK_IMPL_HPP
+#define NETSOCK_IMPL_HPP
+
+#endif //NETSOCK_IMPL_HPP
