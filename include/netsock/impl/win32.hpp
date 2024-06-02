@@ -73,6 +73,10 @@ namespace netsock::impl {
     result_t inet_pton(addr_family_t family, const char *p, void *addr) {
         return ::inet_pton(family, p, addr);
     }
+
+    result_t getaddrinfo(const char *nodename, const char *servername, const addrinfo *hints, addrinfo **res) {
+        return ::getaddrinfo(nodename, servername, hints, res);
+    }
 }
 
 #endif //NETSOCK_WIN32_HPP
