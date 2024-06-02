@@ -16,7 +16,7 @@ namespace netsock::endian {
     enum endianess endianess(){
         union {
             unsigned short value = 0xFF00;
-            char bytes[2];
+            unsigned char bytes[2];
         } _a;
         return (enum endianess)(_a.bytes[0] == 0xFF);
     }

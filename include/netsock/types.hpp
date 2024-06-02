@@ -15,13 +15,18 @@
 #include <sys/types.h>
 #include <netinet/tcp.h>
 #include <netinet/in.h>
-
 #endif
+#include "netsock/impl/base.hpp"
+
 
 namespace netsock {
     enum poll_mode {
         read, write, error
     };
+
+#if defined(__WIN32__) || defined(__WIN64__)
+#define MSG_NOSIGNAL 0
+#endif
 
     namespace option {
         enum socket {
@@ -81,13 +86,16 @@ namespace netsock {
         };
     }
 
-    enum address_family {
+    enum class address_family {
         unspec = AF_UNSPEC,
         inet = AF_INET,
-        inet6 = AF_INET6
+        inet6 = AF_INET6,
+#if defined(__unix__)
+        packet = AF_PACKET
+#endif
     };
 
-    enum socket_type {
+    enum class socket_type {
         stream = SOCK_STREAM,
         dgram = SOCK_DGRAM,
         raw = SOCK_RAW,
@@ -95,28 +103,20 @@ namespace netsock {
         seqpacket = SOCK_SEQPACKET
     };
 
-    enum ip_protocol {
+    enum class ip_protocol {
         icmp = IPPROTO_ICMP,
         igmp = IPPROTO_IGMP,
         tcp = IPPROTO_TCP,
         udp = IPPROTO_UDP,
         icmpv6 = IPPROTO_ICMPV6,
+        raw = IPPROTO_RAW,
 #if defined(__WIN32__) || defined(__WIN64__)
         rfcomm = BTHPROTO_RFCOMM,
         rm = IPPROTO_RM
 #endif
     };
-
-#if defined(__WIN32__) || defined(__WIN64__)
-    typedef uint64_t socket_t;
-    typedef int retsize_t;
-    typedef int datsize_t;
-#elif defined(__unix__)
-    typedef int socket_t;
-    typedef ssize_t retsize_t;
-    typedef size_t datsize_t;
-#endif
-    inline socket_t invalid_socket = ~(socket_t)0;
+    typedef impl::socket_t socket_t;
+    inline socket_t invalid_socket = impl::invalid_socket;
 }
 
 #endif //NETSOCK_TYPES_HPP

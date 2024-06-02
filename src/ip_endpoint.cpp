@@ -9,7 +9,7 @@ namespace netsock {
     }
 
     ip_endpoint::ip_endpoint(const netsock::socket_address &address) {
-        if (address.family() == inet){
+        if (address.family() == address_family::inet){
             auto *addr = (sockaddr_in *)address.data();
             this->address = ip_address::parse((char *)&addr->sin_addr, 4);
             this->port = ip_address::network_to_host(addr->sin_port);
@@ -23,7 +23,7 @@ namespace netsock {
 
     socket_address ip_endpoint::serialize() const {
         socket_address address(family());
-        if (family() == inet){
+        if (family() == address_family::inet){
             auto *addr = (sockaddr_in *)address.data();
             int size = 4;
             this->address.to_bytes((char *) &addr->sin_addr, size);

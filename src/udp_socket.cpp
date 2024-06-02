@@ -79,7 +79,7 @@ namespace netsock {
         return m_socket;
     }
 
-    retsize_t udp_socket::write(const char *data, netsock::datsize_t length, size_t offset) {
+    impl::result_t udp_socket::write(const char *data, size_t length, size_t offset) {
         return socket().write(data, length, offset);
     }
 
@@ -87,7 +87,7 @@ namespace netsock {
         return socket().write(data);
     }
 
-    retsize_t udp_socket::read(char *out, netsock::datsize_t amount, size_t offset) {
+    impl::result_t udp_socket::read(char *out, size_t amount, size_t offset) {
         return socket().read(out, amount, offset);
     }
 
@@ -95,7 +95,7 @@ namespace netsock {
         return socket().read(amount);
     }
 
-    retsize_t udp_socket::write_to(const ip_endpoint &endpoint, const char *data, netsock::datsize_t length, size_t offset) {
+    impl::result_t udp_socket::write_to(const ip_endpoint &endpoint, const char *data, size_t length, size_t offset) {
         return socket().write_to(endpoint, data, length, offset);
     }
 
@@ -103,7 +103,7 @@ namespace netsock {
         return socket().write_to(endpoint, data);
     }
 
-    retsize_t udp_socket::read_from(ip_endpoint &endpoint, char *out, netsock::datsize_t amount, size_t offset) {
+    impl::result_t udp_socket::read_from(ip_endpoint &endpoint, char *out, size_t amount, size_t offset) {
         return socket().read_from(endpoint, out, amount, offset);
     }
 

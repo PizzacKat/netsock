@@ -1,8 +1,5 @@
 #include "netsock/socket_address.hpp"
 #include <algorithm>
-#if defined(__WIN32__) || defined(__WIN64__)
-#include <ws2ipdef.h>
-#endif
 
 namespace netsock {
     socket_address::socket_address(netsock::address_family family, size_t size) {
@@ -10,7 +7,7 @@ namespace netsock {
         std::fill(m_data, m_data + size, '\0');
         m_bufferSize = size;
         auto *addr = (sockaddr *)m_data;
-        addr->sa_family = family;
+        addr->sa_family = (impl::addr_family_t)family;
     }
 
     socket_address &socket_address::operator=(netsock::socket_address &&address) noexcept{
@@ -27,7 +24,7 @@ namespace netsock {
         address.m_data = nullptr;
     }
 
-    socket_address::socket_address(address_family family): socket_address(family, family == inet ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)){
+    socket_address::socket_address(address_family family): socket_address(family, family == address_family::inet ? sizeof(sockaddr_in) : sizeof(sockaddr_in6)){
 
     }
 

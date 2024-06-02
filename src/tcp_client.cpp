@@ -9,7 +9,7 @@ namespace netsock {
 
     }
 
-    tcp_client::tcp_client(netsock::address_family family): m_client(family, socket_type::stream, tcp) {
+    tcp_client::tcp_client(netsock::address_family family): m_client(family, socket_type::stream, ip_protocol::tcp) {
 
     }
 
@@ -60,7 +60,7 @@ namespace netsock {
         return m_client;
     }
 
-    retsize_t tcp_client::write(const char *data, netsock::datsize_t length, size_t offset) {
+    impl::result_t tcp_client::write(const char *data, size_t length, size_t offset) {
         return client().write(data, length, offset);
     }
 
@@ -68,7 +68,7 @@ namespace netsock {
         return client().write(data);
     }
 
-    retsize_t tcp_client::read(char *out, netsock::datsize_t amount, size_t offset) {
+    impl::result_t tcp_client::read(char *out, size_t amount, size_t offset) {
         return client().read(out, amount, offset);
     }
 

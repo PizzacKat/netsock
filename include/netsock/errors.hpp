@@ -1,6 +1,8 @@
 #ifndef NETSOCK_ERRORS_HPP
 #define NETSOCK_ERRORS_HPP
 
+#include "impl/impl.hpp"
+
 #include <stdexcept>
 #if defined(__WIN32__) || defined(__WIN64__)
 #define ERRNAME(ERR) WSA##ERR
@@ -65,11 +67,11 @@ namespace netsock {
 
     class socket_exception : public std::exception {
     public:
-        explicit socket_exception(int code): socket_exception(code, {}){
+        explicit socket_exception(impl::result_t code): socket_exception(code, {}){
 
         }
 
-        socket_exception(int code, const std::string &message): code(code){
+        socket_exception(impl::result_t code, const std::string &message): code(code){
             if (message.empty())
                 m_what = std::to_string(code);
             else
@@ -80,7 +82,7 @@ namespace netsock {
             return m_what.c_str();
         }
 
-        int code;
+        impl::result_t code;
     private:
         std::string m_what;
     };

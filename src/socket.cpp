@@ -6,19 +6,21 @@
 #include <algorithm>
 
 #if defined(__WIN32__) || defined(__WIN64__)
-class autoinit {
-public:
-    autoinit(){
-        WSADATA data{};
-        int res = WSAStartup(MAKEWORD(2, 2), &data);
-        if (res != 0)
-            throw netsock::socket_exception(LAST_ERROR(), "WSAStartup");
-    }
+namespace __netsock {
+    class autoinit {
+    public:
+        autoinit() {
+            WSADATA data{};
+            int res = WSAStartup(MAKEWORD(2, 2), &data);
+            if (res != 0)
+                throw netsock::socket_exception(LAST_ERROR(), "WSAStartup");
+        }
 
-    ~autoinit(){
-        WSACleanup();
-    }
-} autoinit;
+        ~autoinit() {
+            WSACleanup();
+        }
+    } autoinit;
+}
 #endif
 
 namespace netsock {
@@ -27,7 +29,7 @@ namespace netsock {
             throw std::invalid_argument("Endpoint must be an ip endpoint");
         netsock::ip_endpoint ip = endpoint.cast<netsock::ip_endpoint>();
         auto address = ip.address;
-        if (address.family() == inet && family() == inet6) {
+        if (address.family() == address_family::inet && family() == address_family::inet6) {
             address = address.map_to_ipv6();
             return ip_endpoint(address, ip.port).serialize();
         }
@@ -39,10 +41,10 @@ namespace netsock {
     }
 
     socket::socket(enum address_family af, socket_type type, ip_protocol protocol): m_family(af), m_type(type), m_protocol(protocol), m_localEndpoint(), m_remoteEndpoint() {
-        m_socket = ::socket(af, type, protocol);
+        m_socket = impl::socket((impl::addr_family_t)af, (impl::sock_type_t)type, (impl::ip_proto_t)protocol);
     }
 
-    socket::socket(socket_type type, ip_protocol protocol): socket(inet6, type, protocol) {
+    socket::socket(socket_type type, ip_protocol protocol): socket(address_family::inet6, type, protocol) {
         set_option(option::ipv6::ipv6_only, 0);
     }
 
@@ -107,7 +109,7 @@ namespace netsock {
 
     void socket::connect(const netsock::endpoint &endpoint) {
         socket_address address = serialize(endpoint);
-        int res = ::connect(handle(), (sockaddr *)address.data(), (int)address.size());
+        impl::result_t res = impl::connect(handle(), (sockaddr *)address.data(), (int)address.size());
         if (res == -1){
             int err = LAST_ERROR();
             throw socket_exception(err, "connect");
@@ -129,12 +131,8 @@ namespace netsock {
         }
     }
 
-    retsize_t socket::write(const char *data, datsize_t length, size_t offset) {
-#if defined(__WIN32__) || defined(__WIN64__)
-        auto res = send(handle(), data + offset, length, 0);
-#else
-        auto res = send(handle(), data + offset, length, MSG_NOSIGNAL);
-#endif
+    impl::result_t socket::write(const char *data, size_t length, size_t offset) {
+        impl::result_t res = impl::send(handle(), data + offset, length, 0);
         if (res == -1){
             int err = LAST_ERROR();
             update_after_error(err);
@@ -146,20 +144,16 @@ namespace netsock {
     size_t socket::write(const std::vector<char> &data) {
         size_t sent = 0;
         while (sent < data.size()) {
-            auto res = write(data.data(), (datsize_t)std::min(data.size() - sent, (size_t)INT_MAX), sent);
+            auto res = write(data.data(), std::min(data.size() - sent, (size_t)INT_MAX), sent);
             sent += res;
             if (res != INT_MAX) break;
         }
         return sent;
     }
 
-    retsize_t socket::write_to(const endpoint &endpoint, const char *data, datsize_t length, size_t offset) {
+    impl::result_t socket::write_to(const endpoint &endpoint, const char *data, size_t length, size_t offset) {
         socket_address address = serialize(endpoint);
-#if defined(__WIN32__) || defined(__WIN64__)
-        auto res = sendto(handle(), data + offset, length, 0, (sockaddr *)address.data(), (int)address.size());
-#else
-        auto res = sendto(handle(), data + offset, length, MSG_NOSIGNAL, (sockaddr *)address.data(), (int)address.size());
-#endif
+        auto res = impl::sendto(handle(), data + offset, length, impl::msg_nosignal, (sockaddr *)address.data(), (int)address.size());
         if (res == -1){
             int err = LAST_ERROR();
             update_after_error(err);
@@ -178,8 +172,8 @@ namespace netsock {
         return sent;
     }
 
-    retsize_t socket::read(char *out, datsize_t amount, size_t offset) {
-        auto res = recv(handle(), out + offset, amount, 0);
+    impl::result_t socket::read(char *out, size_t amount, size_t offset) {
+        auto res = impl::recv(handle(), out + offset, amount, 0);
         if (res == 0)
             close();
         if (res == -1){
@@ -201,10 +195,10 @@ namespace netsock {
         return {data.begin(), data.begin() + (signed)received};
     }
 
-    retsize_t socket::read_from(ip_endpoint &endpoint, char *out, datsize_t amount, size_t offset) {
+    impl::result_t socket::read_from(ip_endpoint &endpoint, char *out, size_t amount, size_t offset) {
         socket_address storage(family());
-        auto len = (socklen_t)storage.size();
-        auto res = recvfrom(handle(), out + offset, amount, 0, (sockaddr *)storage.data(), &len);
+        auto len = (impl::socklen_t)storage.size();
+        auto res = impl::recvfrom(handle(), out + offset, amount, 0, (sockaddr *)storage.data(), &len);
         if (res == -1){
             int err = LAST_ERROR();
             update_after_error(err);
@@ -224,7 +218,7 @@ namespace netsock {
 
     void socket::bind(const netsock::endpoint &endpoint) {
         socket_address address = serialize(endpoint);
-        int res = ::bind(handle(), (sockaddr *)address.data(), (int)address.size());
+        int res = impl::bind(handle(), (sockaddr *)address.data(), (int)address.size());
         if (res == -1){
             int err = LAST_ERROR();
             throw socket_exception(err, "bind");
@@ -235,7 +229,7 @@ namespace netsock {
     void socket::listen(int backlog) {
         if (m_localEndpoint == nullptr)
             throw invalid_operation("Socket not bound to an endpoint");
-        int res = ::listen(handle(), backlog);
+        int res = impl::listen(handle(), backlog);
         if (res == -1){
             int err = LAST_ERROR();
             throw socket_exception(err, "listen");
@@ -245,8 +239,8 @@ namespace netsock {
 
     socket socket::accept() {
         socket_address storage(family());
-        auto len = (socklen_t)storage.size();
-        socket_t sock = ::accept(handle(), (sockaddr *)storage.data(), &len);
+        impl::socklen_t len = (impl::socklen_t)storage.size();
+        socket_t sock = impl::accept(handle(), (sockaddr *)storage.data(), &len);
         if (sock == netsock::invalid_socket){
             int err = LAST_ERROR();
             throw socket_exception(err, "accept");
@@ -281,7 +275,7 @@ namespace netsock {
             time.tv_usec = (long) (timeout % 1000000);
             tval = &time;
         }
-        res = ::select(
+        res = impl::select(
                 greatest,
                 &read_set,
                 &write_set,
@@ -340,7 +334,7 @@ namespace netsock {
             time.tv_usec = (long) (timeout % 1000000);
             tval = &time;
         }
-        res = ::select(
+        res = impl::select(
                 (int)std::max<socket_t>({read ? read->max() : 0, write ? write->max() : 0, error ? error->max() : 0}),
                 &read_set,
                 &write_set,
@@ -377,11 +371,13 @@ namespace netsock {
     }
 
     void socket::shutdown() {
+        int flags;
 #if defined(__WIN32__) || defined(__WIN64__)
-        int res = ::shutdown(handle(), SD_BOTH);
+        flags = SD_BOTH;
 #elif defined(__unix__)
-        int res = ::shutdown(handle(), SHUT_RDWR);
+        flags = SHUT_RDWR;
 #endif
+        int res = impl::shutdown(handle(), flags);
         if (res == -1){
             int err = LAST_ERROR();
             if (err != socket_error::NOTSOCK)
@@ -390,13 +386,8 @@ namespace netsock {
     }
 
     void socket::close() {
-        if (!closed()) {
-#if defined(__WIN32__) || defined(__WIN64__)
-            closesocket(handle());
-#elif defined(__unix__)
-            ::close(handle());
-#endif
-        }
+        if (!closed())
+            impl::close(handle());
         m_connected = false;
         m_listening = false;
         m_closed = true;
@@ -433,8 +424,8 @@ namespace netsock {
     endpoint socket::local_endpoint() const {
         if (m_localEndpoint == nullptr){
             socket_address address(family());
-            auto len = (socklen_t)address.size();
-            int res = getsockname(handle(), (sockaddr *)address.data(), &len);
+            impl::socklen_t len = (impl::socklen_t)address.size();
+            int res = impl::getsockname(handle(), (sockaddr *)address.data(), &len);
             if (res == -1)
                 throw socket_exception(LAST_ERROR(), "getsockname");
             return ip_endpoint(address);
@@ -456,7 +447,7 @@ namespace netsock {
             timeval time = timeval();
             time.tv_sec = (long) (timeout / 1000000);
             time.tv_usec = (long) (timeout % 1000000);
-            res = ::select(
+            res = impl::select(
                     (int)(m_socket + 1),
                     mode == poll_mode::read ? &fds : nullptr,
                     mode == poll_mode::write ? &fds : nullptr,

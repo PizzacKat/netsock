@@ -65,7 +65,7 @@ namespace netsock {
 
         unsigned int m_address{0};
         unsigned short m_values[8]{0, 0, 0, 0, 0, 0, 0, 0};
-        address_family m_family{inet};
+        address_family m_family{address_family::inet};
     };
 }
 

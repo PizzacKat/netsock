@@ -46,7 +46,7 @@ namespace netsock {
     }
 
     tcp_listener::tcp_listener(const ip_endpoint &endpoint) {
-        m_server = {stream, tcp};
+        m_server = {socket_type::stream, ip_protocol::tcp};
         m_server.bind(endpoint);
     }
 }

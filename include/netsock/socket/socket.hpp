@@ -1,16 +1,13 @@
 #ifndef NETSOCK_SOCKET_HPP
 #define NETSOCK_SOCKET_HPP
 
-#if defined(__WIN32__) || defined(__WIN64__)
-#include <wsipx.h>
-#include <ws2tcpip.h>
-#endif
 #include "netsock/types.hpp"
 #include "netsock/ip_address.hpp"
 #include "netsock/errors.hpp"
 #include "netsock/endpoint.hpp"
 #include "netsock/select_list.hpp"
 #include "netsock/ip_endpoint.hpp"
+#include "netsock/impl/base.hpp"
 
 namespace netsock {
     class socket {
@@ -29,19 +26,19 @@ namespace netsock {
         void connect(const endpoint &endpoint);
         void connect(const std::vector<ip_address> &addresses, unsigned short port);
 
-        retsize_t write(const char *data, datsize_t length, size_t offset = 0);
+        impl::result_t write(const char *data, size_t length, size_t offset = 0);
         size_t write(const std::vector<char> &data);
-        retsize_t write_to(const endpoint &endpoint, const char *data, datsize_t length, size_t offset = 0);
+        impl::result_t write_to(const endpoint &endpoint, const char *data, size_t length, size_t offset = 0);
         size_t write_to(const endpoint &endpoint, const std::vector<char> &data);
 
-        retsize_t read(char *out, datsize_t amount, size_t offset = 0);
+        impl::result_t read(char *out, size_t amount, size_t offset = 0);
         std::vector<char> read(size_t amount);
-        retsize_t read_from(ip_endpoint &endpoint, char *out, datsize_t amount, size_t offset = 0);
+        impl::result_t read_from(ip_endpoint &endpoint, char *out, size_t amount, size_t offset = 0);
         std::vector<char> read_from(ip_endpoint &endpoint, size_t amount);
 
         template <typename T>
         void set_option(int level, int option, const T &value){
-            int res = setsockopt(m_socket, level, option, (const char *)&value, sizeof(T));
+            int res = impl::setsockopt(m_socket, level, option, (const char *)&value, sizeof(T));
             if (res == -1){
                 int err = LAST_ERROR();
                 throw socket_exception(err, "setsockopt");
@@ -64,10 +61,10 @@ namespace netsock {
         }
 
         template <typename T>
-        T get_option(int level, int option){
+        T get_option(int32_t level, int32_t option){
             T value{};
-            socklen_t len = sizeof(T);
-            int res = getsockopt(m_socket, level, option, (char *)&value, &len);
+            size_t len = sizeof(T);
+            impl::result_t res = impl::getsockopt(m_socket, level, option, (char *)&value, &len);
             if (res == -1){
                 int err = LAST_ERROR();
                 throw socket_exception(err, "getsockopt");
@@ -121,7 +118,7 @@ namespace netsock {
         [[nodiscard]] socket_address serialize(const endpoint &endpoint) const;
         void update_after_error(int code, bool disconnect = true);
 
-        socket_t m_socket = netsock::invalid_socket;
+        socket_t m_socket = impl::invalid_socket;
         netsock::address_family m_family{};
         socket_type m_type{};
         ip_protocol m_protocol{};

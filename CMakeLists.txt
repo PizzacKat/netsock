@@ -32,9 +32,15 @@ add_library(${PROJECT_NAME}
         src/select_list.cpp
         include/netsock/udp/udp_socket.hpp
         src/udp_socket.cpp
+        include/netsock/impl/base.hpp
+        include/netsock/impl/win32.hpp
+        src/dns.cpp
+        include/netsock/impl/impl.hpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR})
+
+install(TARGETS ${PROJECT_NAME} LIBRARY )
