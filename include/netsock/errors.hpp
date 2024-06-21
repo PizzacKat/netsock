@@ -1,7 +1,7 @@
 #ifndef NETSOCK_ERRORS_HPP
 #define NETSOCK_ERRORS_HPP
 
-#include "impl/impl.hpp"
+#include "../../src/impl/impl.hpp"
 
 #include <stdexcept>
 #if defined(__WIN32__) || defined(__WIN64__)

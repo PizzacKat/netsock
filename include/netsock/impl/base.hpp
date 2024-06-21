@@ -4,9 +4,7 @@
 #include <cstdint>
 #include <cstddef>
 
-
 struct sockaddr;
-struct fd_set;
 struct timeval;
 struct addrinfo;
 
@@ -24,7 +22,7 @@ namespace netsock::impl {
 
     socket_t socket(addr_family_t family, sock_type_t type, ip_proto_t proto);
     result_t connect(socket_t socket, const sockaddr *addr, socklen_t size);
-    result_t select(socket_t nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, const timeval *timeout);
+    result_t select(socket_t nfds, void *readfds, void *writefds, void *exceptfds, timeval *timeout);
     result_t getsockopt(socket_t socket, int32_t level, int32_t optname, void *val, size_t *len);
     result_t setsockopt(socket_t socket, int32_t level, int32_t optname, const void *val, size_t len);
     result_t shutdown(socket_t socket, int32_t how);

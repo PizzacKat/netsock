@@ -33,9 +33,9 @@ add_library(${PROJECT_NAME}
         include/netsock/udp/udp_socket.hpp
         src/udp_socket.cpp
         include/netsock/impl/base.hpp
-        include/netsock/impl/win32.hpp
         src/dns.cpp
-        include/netsock/impl/impl.hpp
+        src/impl/impl.hpp
+        src/impl/linux.hpp
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)

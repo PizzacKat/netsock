@@ -1,6 +1,6 @@
 #include "netsock/dns.hpp"
 
-#include "netsock/impl/impl.hpp"
+#include "impl/impl.hpp"
 #include "netsock/errors.hpp"
 
 namespace netsock::dns {
