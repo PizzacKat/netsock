@@ -19,12 +19,7 @@ set(src src/socket.cpp
         src/udp_socket.cpp
         src/poll_list.cpp)
 
-add_executable(netsock main.cpp
-        ${src}
-        ${impl}
-)
-
-add_executable(listener listener.cpp
+add_library(netsock
         ${src}
         ${impl}
 )
