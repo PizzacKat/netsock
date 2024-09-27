@@ -9,7 +9,7 @@ namespace netsock {
     };
 
     struct poll_entry {
-        socket *socket;
+        class socket *socket;
         int events;
         int result;
 

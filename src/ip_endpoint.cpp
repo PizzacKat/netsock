@@ -46,7 +46,7 @@ namespace netsock {
     }
 
     ip_endpoint::operator socket_address() const {
-        return impl::impl->convert_address(*this);
+        return impl::convert_address(*this);
     }
 
 }

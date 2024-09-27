@@ -26,7 +26,7 @@ namespace netsock {
     }
 
     std::size_t poll_list::poll(const std::chrono::milliseconds timeout) {
-        return impl::impl->poll(*this, timeout);
+        return impl::poll(*this, timeout);
     }
 
     std::size_t poll_list::size() const {

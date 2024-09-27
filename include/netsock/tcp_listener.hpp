@@ -12,7 +12,7 @@ namespace netsock {
     class tcp_listener {
     public:
         explicit tcp_listener(address_family family = af_inet);
-        tcp_listener(socket &&socket);
+        tcp_listener(netsock::socket &&socket);
 
         void bind(uint16_t port);
         void bind(const ip_endpoint &endpoint);
@@ -22,7 +22,7 @@ namespace netsock {
 
         void listen(int backlog);
 
-        socket accept();
+        netsock::socket accept();
         tcp_client accept_client();
 
         void no_delay(bool enabled);
@@ -34,12 +34,12 @@ namespace netsock {
 
         void close();
 
-        [[nodiscard]] socket &socket();
-        [[nodiscard]] const class socket &socket() const;
+        [[nodiscard]] netsock::socket &socket();
+        [[nodiscard]] const netsock::socket &socket() const;
 
         ~tcp_listener();
     private:
-        class socket _socket;
+        netsock::socket _socket;
         bool _nodelay = false;
         bool _listening = false;
     };

@@ -9,7 +9,7 @@
 namespace netsock {
     class networkbuf : public std::basic_streambuf<std::byte>{
     public:
-        explicit networkbuf(socket &socket): _rdbuf(), _wrbuf(), _socket(socket) {
+        explicit networkbuf(netsock::socket &socket): _rdbuf(), _wrbuf(), _socket(socket) {
             setg(_rdbuf, _rdbuf, _rdbuf);
             setp(_wrbuf, _wrbuf + buffer_size);
         }
@@ -85,21 +85,21 @@ namespace netsock {
 
         std::byte _rdbuf[buffer_size];
         std::byte _wrbuf[buffer_size];
-        socket &_socket;
+        netsock::socket &_socket;
     };
 
     class nstream : public std::basic_iostream<std::byte> {
     public:
-        explicit nstream(socket &socket): basic_iostream(&_buf), _buf(socket), _socket(socket) {
+        explicit nstream(netsock::socket &socket): basic_iostream(&_buf), _buf(socket), _socket(socket) {
 
         }
 
-        [[nodiscard]] class socket &socket() const {
+        [[nodiscard]] netsock::socket &socket() const {
             return _socket;
         }
     private:
         networkbuf _buf;
-        class socket &_socket;
+        netsock::socket &_socket;
     };
 }
 

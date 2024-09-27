@@ -26,14 +26,15 @@ namespace netsock {
     std::size_t udp_socket::recvfrom(std::byte* data, const std::size_t len, ip_endpoint& from) {
         socket_address tmp;
         const std::size_t recv = _socket.recvfrom(data, len, tmp);
-        from = impl::impl->convert_address(tmp);
+        from = impl::convert_address(tmp);
+        from = impl::convert_address(tmp);
         return recv;
     }
 
     std::size_t udp_socket::recvfrom(const std::span<std::byte> span, ip_endpoint& from) {
         socket_address tmp;
         const std::size_t recv = _socket.recvfrom(span, tmp);
-        from = impl::impl->convert_address(tmp);
+        from = impl::convert_address(tmp);
         return recv;
     }
 
@@ -42,7 +43,7 @@ namespace netsock {
     }
 
     ip_endpoint udp_socket::address() const {
-        return impl::impl->convert_address(_socket.address());
+        return impl::convert_address(_socket.address());
     }
 
     int udp_socket::poll(const int events, const std::chrono::milliseconds timeout) {
@@ -137,7 +138,7 @@ namespace netsock {
     }
 
     ip_endpoint udp_connection::address() const {
-        return impl::impl->convert_address(_socket.address());
+        return impl::convert_address(_socket.address());
     }
 
     int udp_connection::poll(const int events, const std::chrono::milliseconds timeout) {

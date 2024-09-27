@@ -39,7 +39,7 @@ namespace netsock {
     socket tcp_listener::accept() {
         class socket tmp = _socket.accept();
         const int nodelay = _nodelay;
-        impl::impl->set_option(tmp.handle(), option::tcp_nodelay, &nodelay, sizeof(int));
+        impl::set_option(tmp.handle(), option::tcp_nodelay, &nodelay, sizeof(int));
         return tmp;
     }
 
@@ -58,7 +58,7 @@ namespace netsock {
     }
 
     ip_endpoint tcp_listener::address() const {
-        return impl::impl->convert_address(_socket.address());
+        return impl::convert_address(_socket.address());
     }
 
     bool tcp_listener::listening() const {

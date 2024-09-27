@@ -30,17 +30,17 @@ namespace netsock {
     bool tcp_client::no_delay() const {
         int enabled = 0;
         std::size_t len = sizeof(enabled);
-        impl::impl->get_option(_socket.handle(), option::tcp_nodelay, &enabled, len);
+        impl::get_option(_socket.handle(), option::tcp_nodelay, &enabled, len);
         return enabled;
     }
 
     void tcp_client::no_delay(const bool enabled) const {
         const int tmp = enabled;
-        impl::impl->set_option(_socket.handle(), option::tcp_nodelay, &tmp, sizeof(tmp));
+        impl::set_option(_socket.handle(), option::tcp_nodelay, &tmp, sizeof(tmp));
     }
 
     ip_endpoint tcp_client::address() const {
-        return impl::impl->convert_address(_socket.address());
+        return impl::convert_address(_socket.address());
     }
 
     bool tcp_client::connected() const {

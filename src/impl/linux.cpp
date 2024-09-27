@@ -1,7 +1,10 @@
 #include "netsock/impl.hpp"
-#include <winsock2.h>
-#include <ws2ipdef.h>
-#include <ws2tcpip.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <poll.h>
 #include "netsock/endian.hpp"
 
 namespace netsock::impl {
@@ -60,7 +63,7 @@ namespace netsock::impl {
             case option::so_debug:
                 return SO_DEBUG;
             case option::so_domain:
-                return SO_PROTOCOL_INFO;
+                return SO_DOMAIN;
             case option::so_error:
                 return SO_ERROR;
             case option::so_dontroute:
@@ -72,7 +75,7 @@ namespace netsock::impl {
             case option::so_oobinline:
                 return SO_OOBINLINE;
             case option::so_protocol:
-                return SO_PROTOCOL_INFO;
+                return SO_PROTOCOL;
             case option::so_rcvbuf:
                 return SO_RCVBUF;
             case option::so_rcvlowat:
@@ -112,37 +115,25 @@ namespace netsock::impl {
     }
 
     static bool is_safe(const int code) {
-        return  code == WSAEWOULDBLOCK ||
-                code == WSAEINPROGRESS ||
-                code == WSAEALREADY ||
-                code == WSAENOBUFS ||
-                code == WSAENOTCONN ||
-                code == WSAEISCONN ||
-                code == WSAESHUTDOWN ||
-                code == WSAECONNRESET ||
-                code == WSAECONNABORTED;
+        return  code == EWOULDBLOCK ||
+                code == EINPROGRESS ||
+                code == EALREADY ||
+                code == ENOBUFS ||
+                code == ENOTCONN ||
+                code == EISCONN ||
+                code == ESHUTDOWN ||
+                code == ECONNRESET ||
+                code == ECONNABORTED;
     }
-    struct winsock_init {
-        static constexpr WORD _ver = MAKEWORD(2, 2);
-        winsock_init() {
-            WSAData data{};
-            if (WSAStartup(_ver, &data) < 0)
-                _throw_and_set_code(socket_error("WSAStartup"));
-        }
-        
-        ~winsock_init() {
-            WSACleanup();
-        }
-    } _winsock_init;
-        
+
     int _code = 0;
 
     template <typename Exception>
     void _throw_and_set_code(Exception &&exception) {
-        _code = WSAGetLastError();
+        _code = errno;
         if (!is_safe(_code))
             throw exception;
-        if (_code == WSAECONNRESET || _code == WSAECONNABORTED)
+        if (_code == ECONNRESET || _code == ECONNABORTED)
             throw socket_closed_error();
     }
 
@@ -151,7 +142,7 @@ namespace netsock::impl {
     }
 
     void close_socket(const socket_t socket) {
-        closesocket(socket);
+        close(socket);
     }
 
     void bind(const socket_t socket, const socket_address &address) {
@@ -168,14 +159,14 @@ namespace netsock::impl {
         if (out) {
             std::size_t len = sizeof(sockaddr_storage);
             *out = socket_address(len);
-            const socket_t sock = ::accept(socket, out->as<sockaddr>(), (int *)&len);
-            if (sock == INVALID_SOCKET)
+            const socket_t sock = ::accept(socket, out->as<sockaddr>(), (::socklen_t *)&len);
+            if (sock < 0)
                 _throw_and_set_code(socket_error("accept"));
             out->resize(len);
             return sock;
         }
         const socket_t sock = ::accept(socket, nullptr, nullptr);
-        if (sock == INVALID_SOCKET)
+        if (sock < 0)
             _throw_and_set_code(socket_error("accept"));
         return sock;
     }
@@ -209,7 +200,7 @@ namespace netsock::impl {
     std::size_t recvfrom(const socket_t socket, std::byte *data, const std::size_t len, socket_address &from) {
         std::size_t size = sizeof(sockaddr_storage);
         from = socket_address(size);
-        const int l = ::recvfrom(socket, (char*)data, (int)len, 0, from.as<sockaddr>(), (int *)&size);
+        const int l = ::recvfrom(socket, (char*)data, (int)len, 0, from.as<sockaddr>(), (::socklen_t *)&size);
         if (l < 0)
             _throw_and_set_code(socket_error("recvfrom"));
         from.resize(size);
@@ -222,37 +213,17 @@ namespace netsock::impl {
     }
 
     void get_option(const socket_t socket, const option::socket option, void *value, std::size_t &len) {
-        if (option == option::so_domain) {
-            WSAPROTOCOL_INFO info;
-            int size = sizeof(info);
-            if (getsockopt(socket, SOL_SOCKET, map_sock_option(option), (char *)&info, &size) < 0)
-                _throw_and_set_code(socket_error("getsockopt"));
-            if (len < sizeof(int))
-                throw std::invalid_argument("value size too small");
-            *(int *)value = info.iAddressFamily;
-            len = sizeof(int);
-        }
-        if (option == option::so_protocol) {
-            WSAPROTOCOL_INFO info;
-            int size = sizeof(info);
-            if (getsockopt(socket, SOL_SOCKET, map_sock_option(option), (char *)&info, &size) < 0)
-                _throw_and_set_code(socket_error("getsockopt"));
-            if (len < sizeof(int))
-                throw std::invalid_argument("value size too small");
-            *(int *)value = info.iProtocol;
-            len = sizeof(int);
-        }
-        if (getsockopt(socket, SOL_SOCKET, map_sock_option(option), (char *)value, (int *)&len) < 0)
+        if (getsockopt(socket, SOL_SOCKET, map_sock_option(option), (char *)value, (::socklen_t *)&len) < 0)
             _throw_and_set_code(socket_error("getsockopt"));
     }
 
     void set_option(const socket_t socket, const option::tcp option, const void *value, const std::size_t len) {
-        if (setsockopt(socket, IPPROTO_TCP, map_tcp_option(option), (const char *)value, (int)len) < 0)
+        if (setsockopt(socket, IPPROTO_TCP, map_tcp_option(option), (const char *)value, (::socklen_t)len) < 0)
             _throw_and_set_code(socket_error("setsockopt"));
     }
 
     void get_option(const socket_t socket, const option::tcp option, void *value, std::size_t &len) {
-        if (getsockopt(socket, IPPROTO_TCP, map_tcp_option(option), (char *)value, (int *)&len))
+        if (getsockopt(socket, IPPROTO_TCP, map_tcp_option(option), (char *)value, (::socklen_t *)&len))
             _throw_and_set_code(socket_error("getsockopt"));
     }
 
@@ -273,7 +244,7 @@ namespace netsock::impl {
     socket_address get_socket_address(const socket_t socket) {
         std::size_t len = sizeof(sockaddr_storage);
         socket_address address(len);
-        if (getsockname(socket, address.as<sockaddr>(), (int *)&len) < 0)
+        if (getsockname(socket, address.as<sockaddr>(), (::socklen_t *)&len) < 0)
             _throw_and_set_code(socket_error("getsockname"));
         address.resize(len);
         return address;
@@ -318,7 +289,7 @@ namespace netsock::impl {
             fds[i].fd = list[i].socket->handle();
             fds[i].events = map_poll_flags(list[i].events);
         }
-        const int res = WSAPoll(fds.data(), list.size(), (int)timeout.count());
+        const int res = poll(fds.data(), list.size(), (int)timeout.count());
         if (res < 0)
             _throw_and_set_code(socket_error("poll"));
         for (std::size_t i = 0; i < list.size(); i++) {
@@ -328,8 +299,8 @@ namespace netsock::impl {
     }
 
     int poll(const socket_t socket, const int events, const std::chrono::milliseconds timeout) {
-        pollfd fd{socket, map_poll_flags(events), 0};
-        if (WSAPoll(&fd, 1, (int)timeout.count()) < 0)
+        pollfd fd{(int)socket, map_poll_flags(events), 0};
+        if (poll(&fd, 1, (int)timeout.count()) < 0)
             _throw_and_set_code(socket_error("poll"));
         return fd.revents;
     }

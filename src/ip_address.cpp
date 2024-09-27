@@ -16,11 +16,11 @@ namespace netsock {
     ip_address::ip_address(const std::string &address) {
         if (address.find(':') != std::string::npos) {
             _family = af_inet6;
-            impl::impl->parse_address(address, _bytes);
+            impl::parse_address(address, _bytes);
             return;
         }
         _family = af_inet;
-        impl::impl->parse_address(address, _address);
+        impl::parse_address(address, _address);
     }
 
     ip_address::ip_address(const char *address): ip_address(std::string(address)) {
@@ -33,7 +33,7 @@ namespace netsock {
     }
 
     ip_address::ip_address(const std::string &address, const uint32_t scope): _family(af_inet6) {
-        impl::impl->parse_address(address, _bytes);
+        impl::parse_address(address, _bytes);
         _scope = scope;
     }
 

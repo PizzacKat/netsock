@@ -8,6 +8,8 @@ include_directories(include)
 if (WIN32)
     link_libraries(wsock32 ws2_32)
     set(impl src/impl/windows.cpp)
+elseif (LINUX)
+    set(impl src/impl/linux.cpp)
 endif ()
 
 set(src src/socket.cpp

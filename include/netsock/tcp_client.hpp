@@ -12,7 +12,7 @@ namespace netsock {
     class tcp_client {
     public:
         explicit tcp_client(address_family family = af_inet);
-        tcp_client(socket &&socket);
+        tcp_client(netsock::socket &&socket);
         explicit tcp_client(const ip_endpoint &endpoint);
         tcp_client(const ip_address &address, uint16_t port);
 
@@ -35,10 +35,10 @@ namespace netsock {
         void close();
 
         [[nodiscard]] nstream &stream();
-        [[nodiscard]] const socket &socket() const;
-        [[nodiscard]] class socket &socket();
+        [[nodiscard]] const netsock::socket &socket() const;
+        [[nodiscard]] netsock::socket &socket();
     private:
-        class socket _socket;
+        netsock::socket _socket;
         std::shared_ptr<nstream> _stream;
     };
 }

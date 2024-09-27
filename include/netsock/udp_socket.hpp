@@ -9,7 +9,7 @@ namespace netsock {
     class udp_socket {
     public:
         explicit udp_socket(address_family family = af_inet);
-        udp_socket(socket &&socket);
+        udp_socket(netsock::socket &&socket);
 
         void bind(const ip_endpoint &endpoint);
         void bind(const ip_address &address, uint16_t port);
@@ -27,16 +27,16 @@ namespace netsock {
         void wait_read();
         void wait_send();
 
-        [[nodiscard]] class socket &socket();
-        [[nodiscard]] const class socket &socket() const;
+        [[nodiscard]] netsock::socket &socket();
+        [[nodiscard]] const netsock::socket &socket() const;
     private:
-        class socket _socket;
+        netsock::socket _socket;
     };
 
     class udp_connection {
     public:
         explicit udp_connection(address_family family = af_inet);
-        udp_connection(socket &&socket);
+        udp_connection(netsock::socket &&socket);
         udp_connection(udp_socket &&socket);
         udp_connection(udp_socket &&local, const ip_endpoint &remote);
         explicit udp_connection(const ip_endpoint &endpoint);
@@ -62,10 +62,10 @@ namespace netsock {
         void wait_read();
         void wait_send();
 
-        [[nodiscard]] class socket &socket();
-        [[nodiscard]] const class socket &socket() const;
+        [[nodiscard]] netsock::socket &socket();
+        [[nodiscard]] const netsock::socket &socket() const;
     private:
-        class socket _socket;
+        netsock::socket _socket;
     };
 }
 
