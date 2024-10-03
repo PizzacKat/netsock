@@ -36,27 +36,27 @@ namespace netsock::impl {
     socket_address convert_address(const ip_endpoint &address);
     ip_endpoint convert_address(const socket_address &address);
 
-    socket_t accept(const socket_t socket, socket_address &out) {
+    inline socket_t accept(const socket_t socket, socket_address &out) {
         return accept(socket, &out);
     }
 
-    socket_t accept(const socket_t socket) {
+    inline socket_t accept(const socket_t socket) {
         return accept(socket, nullptr);
     }
 
-    std::size_t send(const socket_t socket, const std::span<const std::byte> data) {
+    inline std::size_t send(const socket_t socket, const std::span<const std::byte> data) {
         return send(socket, data.data(), data.size());
     }
 
-    std::size_t recv(const socket_t socket, const std::span<std::byte> data) {
+    inline std::size_t recv(const socket_t socket, const std::span<std::byte> data) {
         return recv(socket, data.data(), data.size());
     }
 
-    std::size_t sendto(const socket_t socket, const std::span<const std::byte> data, const socket_address &to) {
+    inline std::size_t sendto(const socket_t socket, const std::span<const std::byte> data, const socket_address &to) {
         return sendto(socket, data.data(), data.size(), to);
     }
 
-    std::size_t recvfrom(const socket_t socket, const std::span<std::byte> data, socket_address &from) {
+    inline std::size_t recvfrom(const socket_t socket, const std::span<std::byte> data, socket_address &from) {
         return recvfrom(socket, data.data(), data.size(), from);
     }
 
