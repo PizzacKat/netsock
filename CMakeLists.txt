@@ -19,7 +19,8 @@ set(src src/socket.cpp
         src/tcp_listener.cpp
         src/socket_address.cpp
         src/udp_socket.cpp
-        src/poll_list.cpp)
+        src/poll_list.cpp
+)
 
 add_library(netsock
         ${src}

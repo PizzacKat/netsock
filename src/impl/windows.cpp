@@ -122,6 +122,18 @@ namespace netsock::impl {
                 code == WSAECONNRESET ||
                 code == WSAECONNABORTED;
     }
+
+    int _code = 0;
+
+    template <typename Exception>
+        void _throw_and_set_code(Exception &&exception) {
+        _code = WSAGetLastError();
+        if (!is_safe(_code))
+            throw exception;
+        if (_code == WSAECONNRESET || _code == WSAECONNABORTED)
+            throw socket_closed_error();
+    }
+
     struct winsock_init {
         static constexpr WORD _ver = MAKEWORD(2, 2);
         winsock_init() {
@@ -134,17 +146,6 @@ namespace netsock::impl {
             WSACleanup();
         }
     } _winsock_init;
-        
-    int _code = 0;
-
-    template <typename Exception>
-    void _throw_and_set_code(Exception &&exception) {
-        _code = WSAGetLastError();
-        if (!is_safe(_code))
-            throw exception;
-        if (_code == WSAECONNRESET || _code == WSAECONNABORTED)
-            throw socket_closed_error();
-    }
 
     socket_t create_socket(const address_family family, const socket_type type, const ip_protocol protocol) {
         return ::socket(map_af(family), map_sock(type), map_proto(protocol));
