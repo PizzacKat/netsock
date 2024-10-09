@@ -3,11 +3,11 @@
 #include "netsock/impl.hpp"
 
 namespace netsock {
-    tcp_client::tcp_client(const address_family family): _socket(family, sock_stream, ipproto_tcp), _stream(std::make_shared<nstream>(_socket)) {
+    tcp_client::tcp_client(const address_family family): _socket(family, sock_stream, ipproto_tcp) {
 
     }
 
-    tcp_client::tcp_client(netsock::socket &&socket): _socket(std::move(socket)), _stream(std::make_shared<nstream>(_socket)) {
+    tcp_client::tcp_client(netsock::socket &&socket): _socket(std::move(socket)) {
 
     }
 
@@ -25,6 +25,22 @@ namespace netsock {
 
     void tcp_client::connect(const ip_address &address, const uint16_t port) {
         _socket.connect(ip_endpoint(address, port));
+    }
+
+    std::size_t tcp_client::send(const std::byte *data, const std::size_t len) {
+        return _socket.send(data, len);
+    }
+
+    std::size_t tcp_client::recv(std::byte *data, const std::size_t len) {
+        return _socket.recv(data, len);
+    }
+
+    std::size_t tcp_client::send(const std::span<const std::byte> span) {
+        return _socket.send(span);
+    }
+
+    std::size_t tcp_client::recv(const std::span<std::byte> span) {
+        return _socket.recv(span);
     }
 
     bool tcp_client::no_delay() const {
@@ -69,10 +85,6 @@ namespace netsock {
 
     void tcp_client::close() {
         _socket.close();
-    }
-
-    nstream &tcp_client::stream() {
-        return *_stream;
     }
 
     socket &tcp_client::socket() {

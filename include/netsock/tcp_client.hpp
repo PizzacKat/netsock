@@ -6,7 +6,6 @@
 #include "socket.hpp"
 #include "ip_address.hpp"
 #include "ip_endpoint.hpp"
-#include "nstream.hpp"
 
 namespace netsock {
     class tcp_client {
@@ -18,6 +17,11 @@ namespace netsock {
 
         void connect(const ip_endpoint &endpoint);
         void connect(const ip_address &address, uint16_t port);
+
+        std::size_t send(const std::byte *data, std::size_t len);
+        std::size_t recv(std::byte *data, std::size_t len);
+        std::size_t send(std::span<const std::byte> span);
+        std::size_t recv(std::span<std::byte> span);
 
         void no_delay(bool enabled) const;
         [[nodiscard]] bool no_delay() const;
@@ -34,12 +38,10 @@ namespace netsock {
 
         void close();
 
-        [[nodiscard]] nstream &stream();
         [[nodiscard]] const netsock::socket &socket() const;
         [[nodiscard]] netsock::socket &socket();
     private:
         netsock::socket _socket;
-        std::shared_ptr<nstream> _stream;
     };
 }
 
