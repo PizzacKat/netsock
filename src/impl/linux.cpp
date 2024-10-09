@@ -142,16 +142,16 @@ namespace netsock::impl {
     }
 
     void close_socket(const socket_t socket) {
-        close(socket);
+        close((int)socket);
     }
 
     void bind(const socket_t socket, const socket_address &address) {
-        if (::bind(socket, address.as<sockaddr>(), (int)address.size()) < 0)
+        if (::bind((int)socket, address.as<sockaddr>(), (int)address.size()) < 0)
             _throw_and_set_code(socket_error("bind"));
     }
 
     void listen(const socket_t socket, const int backlog) {
-        if (::listen(socket, backlog) < 0)
+        if (::listen((int)socket, backlog) < 0)
             _throw_and_set_code(socket_error("listen"));
     }
 
@@ -159,39 +159,39 @@ namespace netsock::impl {
         if (out) {
             std::size_t len = sizeof(sockaddr_storage);
             *out = socket_address(len);
-            const socket_t sock = ::accept(socket, out->as<sockaddr>(), (::socklen_t *)&len);
+            const int sock = ::accept((int)socket, out->as<sockaddr>(), (::socklen_t *)&len);
             if (sock < 0)
                 _throw_and_set_code(socket_error("accept"));
             out->resize(len);
             return sock;
         }
-        const socket_t sock = ::accept(socket, nullptr, nullptr);
+        const int sock = ::accept((int)socket, nullptr, nullptr);
         if (sock < 0)
             _throw_and_set_code(socket_error("accept"));
         return sock;
     }
 
     void connect(const socket_t socket, const socket_address &address) {
-        if (::connect(socket, address.as<sockaddr>(), (int)address.size()) < 0)
+        if (::connect((int)socket, address.as<sockaddr>(), (int)address.size()) < 0)
             _throw_and_set_code(socket_error("connect"));
     }
 
     std::size_t send(const socket_t socket, const std::byte *data, const std::size_t len) {
-        const int l = ::send(socket, (char const*)data, (int)len, 0);
+        const ssize_t l = ::send((int)socket, (char const*)data, (int)len, 0);
         if (l < 0)
             _throw_and_set_code(socket_error("send"));
         return l;
     }
 
     std::size_t recv(const socket_t socket, std::byte *data, const std::size_t len) {
-        const int l = ::recv(socket, (char*)data, (int)len, 0);
+        const ssize_t l = ::recv((int)socket, (char*)data, (int)len, 0);
         if (l < 0)
             _throw_and_set_code(socket_error("recv"));
         return l;
     }
 
     std::size_t sendto(const socket_t socket, const std::byte *data, const std::size_t len, const socket_address &to) {
-        const int l = ::sendto(socket, (char const*)data, (int)len, 0, to.as<sockaddr>(), (int)to.size());
+        const ssize_t l = ::sendto((int)socket, data, len, 0, to.as<sockaddr>(), (int)to.size());
         if (l < 0)
             _throw_and_set_code(socket_error("sendto"));
         return l;
@@ -200,7 +200,7 @@ namespace netsock::impl {
     std::size_t recvfrom(const socket_t socket, std::byte *data, const std::size_t len, socket_address &from) {
         std::size_t size = sizeof(sockaddr_storage);
         from = socket_address(size);
-        const int l = ::recvfrom(socket, (char*)data, (int)len, 0, from.as<sockaddr>(), (::socklen_t *)&size);
+        const ssize_t l = ::recvfrom((int)socket, data, len, 0, from.as<sockaddr>(), (::socklen_t *)&size);
         if (l < 0)
             _throw_and_set_code(socket_error("recvfrom"));
         from.resize(size);
@@ -208,22 +208,22 @@ namespace netsock::impl {
     }
 
     void set_option(const socket_t socket, const option::socket option, const void *value, const std::size_t len) {
-        if (setsockopt(socket, SOL_SOCKET, map_sock_option(option), (const char *)value, (int)len) < 0)
+        if (setsockopt((int)socket, SOL_SOCKET, map_sock_option(option), value, (int)len) < 0)
             _throw_and_set_code(socket_error("setsockopt"));
     }
 
     void get_option(const socket_t socket, const option::socket option, void *value, std::size_t &len) {
-        if (getsockopt(socket, SOL_SOCKET, map_sock_option(option), (char *)value, (::socklen_t *)&len) < 0)
+        if (getsockopt((int)socket, SOL_SOCKET, map_sock_option(option), value, (::socklen_t *)&len) < 0)
             _throw_and_set_code(socket_error("getsockopt"));
     }
 
     void set_option(const socket_t socket, const option::tcp option, const void *value, const std::size_t len) {
-        if (setsockopt(socket, IPPROTO_TCP, map_tcp_option(option), (const char *)value, (::socklen_t)len) < 0)
+        if (setsockopt((int)socket, IPPROTO_TCP, map_tcp_option(option), value, (::socklen_t)len) < 0)
             _throw_and_set_code(socket_error("setsockopt"));
     }
 
     void get_option(const socket_t socket, const option::tcp option, void *value, std::size_t &len) {
-        if (getsockopt(socket, IPPROTO_TCP, map_tcp_option(option), (char *)value, (::socklen_t *)&len))
+        if (getsockopt((int)socket, IPPROTO_TCP, map_tcp_option(option), value, (::socklen_t *)&len))
             _throw_and_set_code(socket_error("getsockopt"));
     }
 
@@ -244,7 +244,7 @@ namespace netsock::impl {
     socket_address get_socket_address(const socket_t socket) {
         std::size_t len = sizeof(sockaddr_storage);
         socket_address address(len);
-        if (getsockname(socket, address.as<sockaddr>(), (::socklen_t *)&len) < 0)
+        if (getsockname((int)socket, address.as<sockaddr>(), (::socklen_t *)&len) < 0)
             _throw_and_set_code(socket_error("getsockname"));
         address.resize(len);
         return address;
@@ -286,15 +286,14 @@ namespace netsock::impl {
     std::size_t poll(poll_list &list, const std::chrono::milliseconds timeout) {
         std::vector<pollfd> fds(list.size());
         for (std::size_t i = 0; i < list.size(); i++) {
-            fds[i].fd = list[i].socket->handle();
+            fds[i].fd = (int)list[i].socket->handle();
             fds[i].events = map_poll_flags(list[i].events);
         }
         const int res = poll(fds.data(), list.size(), (int)timeout.count());
         if (res < 0)
             _throw_and_set_code(socket_error("poll"));
-        for (std::size_t i = 0; i < list.size(); i++) {
+        for (std::size_t i = 0; i < list.size(); i++)
             list[i].result = map_poll_events(fds[i].revents);
-        }
         return res;
     }
 
