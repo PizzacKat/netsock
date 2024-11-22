@@ -32,7 +32,7 @@ namespace netsock {
         }
 
         [[nodiscard]] uint64_t operator()(const uint64_t value) const {
-            return value >> 56 & 0xFF | value >> 40 & 0xFF00 | value >> 24 & 0xFF0000 | value << 24 & 0xFF000000 | value << 40 & 0xFF0000000000 | value << 56 & 0xFF00000000000000;
+            return value >> 56 & 0xFF | value >> 40 & 0xFF00 | value >> 24 & 0xFF0000 | value >> 8 & 0xFF000000 | value << 8 & 0xFF00000000 | value << 24 & 0xFF0000000000 | value << 40 & 0xFF000000000000 | value << 56 & 0xFF00000000000000;
         }
     };
 
