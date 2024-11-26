@@ -65,6 +65,10 @@ namespace netsock {
         return _listening;
     }
 
+    bool tcp_listener::pending() const {
+        return _socket.can_read();
+    }
+
     void tcp_listener::close() {
         _listening = false;
         _socket.close();

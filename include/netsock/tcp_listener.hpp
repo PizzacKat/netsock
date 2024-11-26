@@ -31,6 +31,7 @@ namespace netsock {
         [[nodiscard]] ip_endpoint address() const;
 
         [[nodiscard]] bool listening() const;
+        [[nodiscard]] bool pending() const;
 
         void close();
 

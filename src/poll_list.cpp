@@ -13,7 +13,7 @@ namespace netsock {
         _entries.push_back(entry);
     }
 
-    void poll_list::push(socket &socket, int events) {
+    void poll_list::push(const socket &socket, int events) {
         _entries.emplace_back(socket, events);
     }
 

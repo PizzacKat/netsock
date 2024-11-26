@@ -46,11 +46,11 @@ namespace netsock {
         std::size_t recvfrom(std::span<std::byte> span, socket_address& from);
         std::size_t sendto(std::span<const std::byte> span, const socket_address& to);
 
-        [[nodiscard]] int poll(int events, std::chrono::milliseconds timeout = poll_wait);
-        [[nodiscard]] bool can_read();
-        [[nodiscard]] bool can_send();
-        void wait_read();
-        void wait_send();
+        [[nodiscard]] int poll(int events, std::chrono::milliseconds timeout = poll_wait) const;
+        [[nodiscard]] bool can_read() const;
+        [[nodiscard]] bool can_send() const;
+        void wait_read() const;
+        void wait_send() const;
 
         [[nodiscard]] socket_address address() const;
 

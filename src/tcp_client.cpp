@@ -63,23 +63,23 @@ namespace netsock {
         return _socket.connected();
     }
 
-    int tcp_client::poll(const int events, const std::chrono::milliseconds timeout) {
+    int tcp_client::poll(const int events, const std::chrono::milliseconds timeout) const {
         return _socket.poll(events, timeout);
     }
 
-    bool tcp_client::can_read() {
+    bool tcp_client::can_read() const {
         return _socket.can_read();
     }
 
-    bool tcp_client::can_send() {
+    bool tcp_client::can_send() const {
         return _socket.can_send();
     }
 
-    void tcp_client::wait_read() {
+    void tcp_client::wait_read() const {
         _socket.wait_read();
     }
 
-    void tcp_client::wait_send() {
+    void tcp_client::wait_send() const {
         _socket.wait_send();
     }
 

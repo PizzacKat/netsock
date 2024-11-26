@@ -9,11 +9,11 @@ namespace netsock {
     };
 
     struct poll_entry {
-        class socket *socket;
+        const class socket *socket;
         int events;
         int result;
 
-        poll_entry(class socket &socket, const int events): socket(&socket), events(events), result(0) {
+        poll_entry(const class socket &socket, const int events): socket(&socket), events(events), result(0) {
 
         }
     };
@@ -24,7 +24,7 @@ namespace netsock {
         poll_list(std::initializer_list<poll_entry> entries);
 
         void push(const poll_entry &entry);
-        void push(socket &socket, int events);
+        void push(const socket &socket, int events);
         void remove(const socket &socket);
 
         std::size_t poll(std::chrono::milliseconds timeout = poll_wait);

@@ -124,23 +124,23 @@ namespace netsock {
         return impl::sendto(_socket, span.data(), span.size(), to);
     }
 
-    int socket::poll(const int events, const std::chrono::milliseconds timeout) {
+    int socket::poll(const int events, const std::chrono::milliseconds timeout) const {
         return impl::poll(_socket, events, timeout);
     }
 
-    void socket::wait_read() {
+    void socket::wait_read() const {
         while (poll(pollin) & pollin == 0);
     }
 
-    bool socket::can_read() {
+    bool socket::can_read() const {
         return poll(pollin, poll_nowait) & pollin;
     }
 
-    bool socket::can_send() {
+    bool socket::can_send() const {
         return poll(pollout, poll_nowait) & pollout;
     }
 
-    void socket::wait_send() {
+    void socket::wait_send() const {
         while (poll(pollout) & pollout == 0);
     }
 
@@ -208,7 +208,7 @@ namespace netsock {
 
     socket::~socket() {
         if (_socket != _invalid_socket)
-            impl::close_socket(_socket);
+            close();
     }
 
 }
