@@ -21,11 +21,11 @@ namespace netsock {
 
         [[nodiscard]] ip_endpoint address() const;
 
-        [[nodiscard]] int poll(int events, std::chrono::milliseconds timeout = poll_wait);
-        [[nodiscard]] bool can_read();
-        [[nodiscard]] bool can_send();
-        void wait_read();
-        void wait_send();
+        [[nodiscard]] int poll(int events, std::chrono::milliseconds timeout = poll_wait) const;
+        [[nodiscard]] bool can_read() const;
+        [[nodiscard]] bool can_send() const;
+        void wait_read() const;
+        void wait_send() const;
 
         [[nodiscard]] netsock::socket &socket();
         [[nodiscard]] const netsock::socket &socket() const;
@@ -56,11 +56,11 @@ namespace netsock {
 
         [[nodiscard]] ip_endpoint address() const;
 
-        [[nodiscard]] int poll(int events, std::chrono::milliseconds timeout = poll_wait);
-        [[nodiscard]] bool can_read();
-        [[nodiscard]] bool can_send();
-        void wait_read();
-        void wait_send();
+        [[nodiscard]] int poll(int events, std::chrono::milliseconds timeout = poll_wait) const;
+        [[nodiscard]] bool can_read() const;
+        [[nodiscard]] bool can_send() const;
+        void wait_read() const;
+        void wait_send() const;
 
         [[nodiscard]] netsock::socket &socket();
         [[nodiscard]] const netsock::socket &socket() const;

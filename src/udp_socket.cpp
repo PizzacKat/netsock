@@ -46,23 +46,23 @@ namespace netsock {
         return impl::convert_address(_socket.address());
     }
 
-    int udp_socket::poll(const int events, const std::chrono::milliseconds timeout) {
+    int udp_socket::poll(const int events, const std::chrono::milliseconds timeout) const {
         return _socket.poll(events, timeout);
     }
 
-    bool udp_socket::can_read() {
+    bool udp_socket::can_read() const {
         return _socket.can_read();
     }
 
-    bool udp_socket::can_send() {
+    bool udp_socket::can_send() const {
         return _socket.can_send();
     }
 
-    void udp_socket::wait_read() {
+    void udp_socket::wait_read() const {
         _socket.wait_read();
     }
 
-    void udp_socket::wait_send() {
+    void udp_socket::wait_send() const {
         _socket.wait_send();
     }
 
@@ -141,23 +141,23 @@ namespace netsock {
         return impl::convert_address(_socket.address());
     }
 
-    int udp_connection::poll(const int events, const std::chrono::milliseconds timeout) {
+    int udp_connection::poll(const int events, const std::chrono::milliseconds timeout) const {
         return _socket.poll(events, timeout);
     }
 
-    bool udp_connection::can_read() {
+    bool udp_connection::can_read() const {
         return _socket.can_read();
     }
 
-    bool udp_connection::can_send() {
+    bool udp_connection::can_send() const {
         return _socket.can_send();
     }
 
-    void udp_connection::wait_read() {
+    void udp_connection::wait_read() const {
         _socket.wait_read();
     }
 
-    void udp_connection::wait_send() {
+    void udp_connection::wait_send() const {
         _socket.wait_send();
     }
 
