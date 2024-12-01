@@ -4,12 +4,12 @@
 #include "impl.hpp"
 
 namespace netsock::dns {
-    inline std::vector<ip_endpoint> resolve(const std::string &hostname) {
+    inline std::vector<ip_address> resolve(const std::string &hostname) {
         auto addresses = impl::resolve_hosts(hostname);
-        std::vector<ip_endpoint> res(addresses.size());
+        std::vector<ip_address> res(addresses.size());
         for (const auto &addr : addresses) {
             auto endpoint = impl::convert_address(addr);
-            res.emplace_back(endpoint);
+            res.emplace_back(endpoint.address());
         }
         return res;
     }
