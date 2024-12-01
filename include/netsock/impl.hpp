@@ -33,6 +33,8 @@ namespace netsock::impl {
 
     socket_address get_socket_address(socket_t socket);
 
+    std::vector<socket_address> resolve_hosts(const std::string &hostname);
+
     socket_address convert_address(const ip_endpoint &address);
     ip_endpoint convert_address(const socket_address &address);
 

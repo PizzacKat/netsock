@@ -250,6 +250,26 @@ namespace netsock::impl {
         return address;
     }
 
+    std::vector<socket_address> resolve_hosts(const std::string &hostname) {
+        std::vector<socket_address> addresses;
+        if (hostname.empty())
+            return addresses;
+        addrinfo *ai = nullptr;
+        if (getaddrinfo(hostname.c_str(), nullptr, nullptr, &ai) < 0)
+            _throw_and_set_code(socket_error("getaddrinfo"));
+        if (ai == nullptr)
+            return addresses;
+        const addrinfo *info = ai;
+        while (info != nullptr) {
+            socket_address address(ai->ai_addrlen);
+            memcpy(address.data(), ai->ai_addr, ai->ai_addrlen);
+            addresses.push_back(address);
+            info = info->ai_next;
+        }
+        freeaddrinfo(ai);
+        return addresses;
+    }
+
     ip_endpoint convert_address(const socket_address &address) {
         const auto *saddr = address.as<sockaddr>();
         if (saddr->sa_family != AF_INET && saddr->sa_family != AF_INET6)
