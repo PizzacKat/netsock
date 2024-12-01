@@ -18,6 +18,13 @@ namespace netsock {
         std::streamsize xsputn(const char_type *__s, std::streamsize __n) override;
         std::streamsize xsgetn(char_type *__s, std::streamsize __n) override;
 
+        int_type sync() override;
+
+        static constexpr std::size_t buffer_size = 512;
+
+        char _ibuf[buffer_size]{};
+        char _obuf[buffer_size]{};
+
         tcp_client &_client;
     };
 
