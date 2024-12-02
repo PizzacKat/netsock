@@ -43,10 +43,21 @@ namespace netsock {
         return tmp;
     }
 
-    tcp_client tcp_listener::accept_client() {
-        tcp_client tmp = _socket.accept();
-        tmp.no_delay(_nodelay);
+    socket tcp_listener::accept(ip_endpoint &endpoint) {
+        socket_address addr;
+        class socket tmp = _socket.accept(addr);
+        endpoint = impl::convert_address(addr);
+        const int nodelay = _nodelay;
+        impl::set_option(tmp.handle(), option::tcp_nodelay, &nodelay, sizeof(int));
         return tmp;
+    }
+
+    tcp_client tcp_listener::accept_client() {
+        ip_endpoint endpoint;
+        netsock::socket tmp = accept(endpoint);
+        tcp_client client(std::move(tmp), endpoint);
+        client.no_delay(_nodelay);
+        return client;
     }
 
     void tcp_listener::no_delay(const bool enabled) {

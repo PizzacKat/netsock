@@ -11,7 +11,7 @@ namespace netsock {
     class tcp_client {
     public:
         explicit tcp_client(address_family family = af_inet);
-        tcp_client(netsock::socket &&socket);
+        tcp_client(netsock::socket &&socket, const ip_endpoint &remote = {});
         explicit tcp_client(const ip_endpoint &endpoint);
         tcp_client(const ip_address &address, uint16_t port);
 
@@ -27,6 +27,7 @@ namespace netsock {
         [[nodiscard]] bool no_delay() const;
 
         [[nodiscard]] ip_endpoint address() const;
+        [[nodiscard]] ip_endpoint remote_address() const;
 
         [[nodiscard]] bool connected() const;
 
@@ -42,6 +43,7 @@ namespace netsock {
         [[nodiscard]] netsock::socket &socket();
     private:
         netsock::socket _socket;
+        ip_endpoint _remote;
     };
 }
 

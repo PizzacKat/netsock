@@ -7,7 +7,7 @@ namespace netsock {
 
     }
 
-    tcp_client::tcp_client(netsock::socket &&socket): _socket(std::move(socket)) {
+    tcp_client::tcp_client(netsock::socket &&socket, const ip_endpoint &remote): _socket(std::move(socket)), _remote(remote) {
 
     }
 
@@ -57,6 +57,10 @@ namespace netsock {
 
     ip_endpoint tcp_client::address() const {
         return impl::convert_address(_socket.address());
+    }
+
+    ip_endpoint tcp_client::remote_address() const {
+        return _remote;
     }
 
     bool tcp_client::connected() const {

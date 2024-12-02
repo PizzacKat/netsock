@@ -23,6 +23,7 @@ namespace netsock {
         void listen(int backlog);
 
         netsock::socket accept();
+        netsock::socket accept(ip_endpoint &endpoint);
         tcp_client accept_client();
 
         void no_delay(bool enabled);
