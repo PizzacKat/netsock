@@ -20,9 +20,7 @@ set(src src/socket.cpp
         src/socket_address.cpp
         src/udp_socket.cpp
         src/poll_list.cpp
-        include/netsock/tcp_stream.hpp
         src/tcp_stream.cpp
-        include/netsock/dns.hpp
 )
 
 add_library(netsock

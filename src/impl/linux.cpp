@@ -48,6 +48,8 @@ namespace netsock::impl {
                 return IPPROTO_TCP;
             case ipproto_udp:
                 return IPPROTO_UDP;
+            case ipproto_raw:
+                return IPPROTO_RAW;
             default:
                 break;
         }

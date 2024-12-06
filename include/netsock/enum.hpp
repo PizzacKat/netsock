@@ -22,7 +22,8 @@ namespace netsock {
     enum ip_protocol {
         ipproto_ip,
         ipproto_tcp,
-        ipproto_udp
+        ipproto_udp,
+        ipproto_raw
     };
 
     namespace option {
