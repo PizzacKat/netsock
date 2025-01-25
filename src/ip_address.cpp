@@ -57,6 +57,22 @@ namespace netsock {
         return _bytes;
     }
 
+    bool ip_address::operator==(const ip_address &address) const {
+        if (address.family() != family())
+            return false;
+        if (family() == af_inet)
+            return addr() == address.addr();
+        for (std::size_t i = 0; i < 8; i++)
+            if (addr6()[i] != address.addr6()[i])
+                return false;
+        return true;
+    }
+
+    bool ip_address::operator!=(const ip_address &address) const {
+        return !(*this == address);
+    }
+
+    const ip_address ip_address::zero(0x00000000u);
     const ip_address ip_address::any(0x00000000u);
     const ip_address ip_address::loopback(0x7F000001u);
     const ip_address ip_address::broadcast(0xFFFFFFFFu);

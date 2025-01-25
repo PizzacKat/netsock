@@ -21,9 +21,13 @@ namespace netsock {
         [[nodiscard]] uint32_t scope() const;
         [[nodiscard]] const uint16_t *addr6() const;
 
+        static const ip_address zero;
         static const ip_address any;
         static const ip_address loopback;
         static const ip_address broadcast;
+
+        [[nodiscard]] bool operator==(const ip_address &address) const;
+        [[nodiscard]] bool operator!=(const ip_address &address) const;
     private:
         address_family _family;
         union {

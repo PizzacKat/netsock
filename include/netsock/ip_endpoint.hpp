@@ -16,6 +16,9 @@ namespace netsock {
         [[nodiscard]] uint16_t port() const;
 
         operator socket_address() const;
+
+        bool operator==(const ip_endpoint &endpoint) const;
+        bool operator!=(const ip_endpoint &endpoint) const;
     private:
         ip_address _address;
         uint16_t _port;

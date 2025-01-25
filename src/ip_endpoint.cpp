@@ -49,4 +49,11 @@ namespace netsock {
         return impl::convert_address(*this);
     }
 
+    bool ip_endpoint::operator==(const ip_endpoint &endpoint) const {
+        return address() == endpoint.address() && port() == endpoint.port();
+    }
+
+    bool ip_endpoint::operator!=(const ip_endpoint &endpoint) const {
+        return !(*this == endpoint);
+    }
 }
