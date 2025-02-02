@@ -3,8 +3,6 @@ project(netsock)
 
 set(CMAKE_CXX_STANDARD 20)
 
-include_directories(include)
-
 if (WIN32)
     link_libraries(wsock32 ws2_32)
     set(impl src/impl/windows.cpp)
@@ -37,3 +35,5 @@ else ()
             ${src}
             ${impl})
 endif ()
+
+target_include_directories(netsock PUBLIC include)
