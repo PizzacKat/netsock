@@ -24,6 +24,7 @@ set(src src/socket.cpp
 if (BUILD_SHARED_LIBS)
     set(CMAKE_DEBUG_POSTFIX  "-d")
     set(CMAKE_RELEASE_POSTFIX "")
+    target_compile_options(netsock PUBLIC "-fPIC")
 
 else ()
     set(CMAKE_DEBUG_POSTFIX  "-ds")
