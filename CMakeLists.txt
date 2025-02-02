@@ -21,19 +21,18 @@ set(src src/socket.cpp
         src/tcp_stream.cpp
 )
 
-if (BUILD_SHARED)
+if (BUILD_SHARED_LIBS)
     set(CMAKE_DEBUG_POSTFIX  "-d")
     set(CMAKE_RELEASE_POSTFIX "")
-    add_library(netsock SHARED
-            ${src}
-            ${impl}
-    )
+
 else ()
     set(CMAKE_DEBUG_POSTFIX  "-ds")
     set(CMAKE_RELEASE_POSTFIX "-s")
-    add_library(netsock
-            ${src}
-            ${impl})
 endif ()
+
+add_library(netsock
+        ${src}
+        ${impl}
+)
 
 target_include_directories(netsock PUBLIC include)
