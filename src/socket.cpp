@@ -29,8 +29,7 @@ namespace netsock {
     }
 
     socket &socket::operator=(socket &&other) noexcept {
-        if (_socket != _invalid_socket)
-            impl::close_socket(_socket);
+        close();
         _socket = other._socket;
         _connected = other._connected;
         other._socket = _invalid_socket;
@@ -45,7 +44,6 @@ namespace netsock {
     bool socket::connected() const {
         return _connected;
     }
-
 
     socket_t socket::handle() const {
         return _socket;
@@ -129,7 +127,7 @@ namespace netsock {
     }
 
     void socket::wait_read() const {
-        while (poll(pollin) & pollin == 0);
+        while ((poll(pollin) & pollin) == 0);
     }
 
     bool socket::can_read() const {
@@ -141,7 +139,7 @@ namespace netsock {
     }
 
     void socket::wait_send() const {
-        while (poll(pollout) & pollout == 0);
+        while ((poll(pollout) & pollout) == 0);
     }
 
     socket_address socket::address() const {
@@ -202,13 +200,12 @@ namespace netsock {
 
     void socket::close() {
         _connected = false;
-        if (_socket != _invalid_socket)
+        if (_socket != _invalid_socket && !_closed)
             impl::close_socket(_socket);
+        _closed = true;
     }
 
     socket::~socket() {
-        if (_socket != _invalid_socket)
-            close();
+        close();
     }
-
 }

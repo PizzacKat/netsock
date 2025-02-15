@@ -70,6 +70,7 @@ namespace netsock {
 
         ~socket();
     private:
+        bool _closed = false;
         bool _connected = false;
         socket_t _socket;
     };
