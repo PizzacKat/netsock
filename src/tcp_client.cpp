@@ -87,6 +87,54 @@ namespace netsock {
         _socket.wait_send();
     }
 
+    void tcp_client::send_buffer(const std::size_t bytes) {
+        _socket.send_buffer(bytes);
+    }
+
+    std::size_t tcp_client::send_buffer() const {
+        return _socket.send_buffer();
+    }
+
+    void tcp_client::recv_buffer(const std::size_t bytes) {
+        _socket.recv_buffer(bytes);
+    }
+
+    std::size_t tcp_client::recv_buffer() const {
+        return _socket.recv_buffer();
+    }
+
+    void tcp_client::send_timeout(const std::chrono::milliseconds timeout) {
+        _socket.send_timeout(timeout);
+    }
+
+    std::chrono::milliseconds tcp_client::send_timeout() const {
+        return _socket.send_timeout();
+    }
+
+    void tcp_client::recv_timeout(const std::chrono::milliseconds timeout) {
+        _socket.recv_timeout(timeout);
+    }
+
+    std::chrono::milliseconds tcp_client::recv_timeout() const {
+        return _socket.recv_timeout();
+    }
+
+    void tcp_client::reuse_address(const bool reuse) {
+        _socket.reuse_address(reuse);
+    }
+
+    bool tcp_client::reuse_address() const {
+        return _socket.reuse_address();
+    }
+
+    void tcp_client::reuse_port(const bool reuse) {
+        return _socket.reuse_port(reuse);
+    }
+
+    bool tcp_client::reuse_port() const {
+        return _socket.reuse_port();
+    }
+
     void tcp_client::close() {
         _socket.close();
     }

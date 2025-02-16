@@ -63,6 +63,11 @@ namespace netsock {
         void recv_timeout(std::chrono::milliseconds timeout);
         [[nodiscard]] std::chrono::milliseconds recv_timeout() const;
 
+        void reuse_address(bool reuse);
+        [[nodiscard]] bool reuse_address() const;
+        void reuse_port(bool reuse);
+        [[nodiscard]] bool reuse_port() const;
+
         bool operator==(const socket &other) const;
         bool operator!=(const socket &other) const;
 

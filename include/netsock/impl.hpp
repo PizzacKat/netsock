@@ -65,6 +65,8 @@ namespace netsock::impl {
     std::size_t poll(poll_list &list, std::chrono::milliseconds timeout);
     int poll(socket_t socket, int events, std::chrono::milliseconds timeout);
 
+    void set_blocking(socket_t socket, bool blocking);
+
     int error_code();
 }
 

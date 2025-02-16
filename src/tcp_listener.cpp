@@ -80,6 +80,22 @@ namespace netsock {
         return _socket.can_read();
     }
 
+    void tcp_listener::reuse_address(const bool reuse) {
+        _socket.reuse_address(reuse);
+    }
+
+    bool tcp_listener::reuse_address() const {
+        return _socket.reuse_address();
+    }
+
+    void tcp_listener::reuse_port(const bool reuse) {
+        return _socket.reuse_port(reuse);
+    }
+
+    bool tcp_listener::reuse_port() const {
+        return _socket.reuse_port();
+    }
+
     void tcp_listener::close() {
         _listening = false;
         _socket.close();

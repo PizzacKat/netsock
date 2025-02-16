@@ -6,6 +6,7 @@
 #include <netinet/tcp.h>
 #include <poll.h>
 #include "netsock/endian.hpp"
+#include <fcntl.h>
 
 namespace netsock::impl {
     static int map_af(const address_family family) {
@@ -324,6 +325,15 @@ namespace netsock::impl {
         if (poll(&fd, 1, (int)timeout.count()) < 0)
             _throw_and_set_code(socket_error("poll"));
         return fd.revents;
+    }
+
+    void set_blocking(const socket_t socket, const bool blocking) {
+        int flags = fcntl(static_cast<int>(socket), F_GETFL, 0);
+        if (flags == -1)
+            _throw_and_set_code(socket_error("fcntl"));
+        flags = blocking ? flags & ~O_NONBLOCK : flags | O_NONBLOCK;
+        if (fcntl(static_cast<int>(socket), F_SETFL, flags) < 0)
+            _throw_and_set_code(socket_error("fcntl"));
     }
 
     int error_code() {

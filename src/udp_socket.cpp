@@ -66,6 +66,54 @@ namespace netsock {
         _socket.wait_send();
     }
 
+    void udp_socket::send_buffer(const std::size_t bytes) {
+        _socket.send_buffer(bytes);
+    }
+
+    std::size_t udp_socket::send_buffer() const {
+        return _socket.send_buffer();
+    }
+
+    void udp_socket::recv_buffer(const std::size_t bytes) {
+        _socket.recv_buffer(bytes);
+    }
+
+    std::size_t udp_socket::recv_buffer() const {
+        return _socket.recv_buffer();
+    }
+
+    void udp_socket::send_timeout(const std::chrono::milliseconds timeout) {
+        _socket.send_timeout(timeout);
+    }
+
+    std::chrono::milliseconds udp_socket::send_timeout() const {
+        return _socket.send_timeout();
+    }
+
+    void udp_socket::recv_timeout(const std::chrono::milliseconds timeout) {
+        _socket.recv_timeout(timeout);
+    }
+
+    std::chrono::milliseconds udp_socket::recv_timeout() const {
+        return _socket.recv_timeout();
+    }
+
+    void udp_socket::reuse_address(const bool reuse) {
+        _socket.reuse_address(reuse);
+    }
+
+    bool udp_socket::reuse_address() const {
+        return _socket.reuse_address();
+    }
+
+    void udp_socket::reuse_port(const bool reuse) {
+        return _socket.reuse_port(reuse);
+    }
+
+    bool udp_socket::reuse_port() const {
+        return _socket.reuse_port();
+    }
+
     socket& udp_socket::socket() {
         return _socket;
     }
@@ -159,6 +207,54 @@ namespace netsock {
 
     void udp_connection::wait_send() const {
         _socket.wait_send();
+    }
+
+    void udp_connection::send_buffer(const std::size_t bytes) {
+        _socket.send_buffer(bytes);
+    }
+
+    std::size_t udp_connection::send_buffer() const {
+        return _socket.send_buffer();
+    }
+
+    void udp_connection::recv_buffer(const std::size_t bytes) {
+        _socket.recv_buffer(bytes);
+    }
+
+    std::size_t udp_connection::recv_buffer() const {
+        return _socket.recv_buffer();
+    }
+
+    void udp_connection::send_timeout(const std::chrono::milliseconds timeout) {
+        _socket.send_timeout(timeout);
+    }
+
+    std::chrono::milliseconds udp_connection::send_timeout() const {
+        return _socket.send_timeout();
+    }
+
+    void udp_connection::recv_timeout(const std::chrono::milliseconds timeout) {
+        _socket.recv_timeout(timeout);
+    }
+
+    std::chrono::milliseconds udp_connection::recv_timeout() const {
+        return _socket.recv_timeout();
+    }
+
+    void udp_connection::reuse_address(const bool reuse) {
+        _socket.reuse_address(reuse);
+    }
+
+    bool udp_connection::reuse_address() const {
+        return _socket.reuse_address();
+    }
+
+    void udp_connection::reuse_port(const bool reuse) {
+        return _socket.reuse_port(reuse);
+    }
+
+    bool udp_connection::reuse_port() const {
+        return _socket.reuse_port();
     }
 
     socket& udp_connection::socket() {

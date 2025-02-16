@@ -190,6 +190,30 @@ namespace netsock {
         return std::chrono::milliseconds(count);
     }
 
+    void socket::reuse_address(const bool reuse) {
+        int tmp = reuse;
+        impl::set_option(_socket, option::so_reuseaddr, &tmp, sizeof(tmp));
+    }
+
+    bool socket::reuse_address() const {
+        int res = false;
+        std::size_t len = sizeof(res);
+        impl::get_option(_socket, option::so_reuseaddr, &res, len);
+        return res;
+    }
+
+    void socket::reuse_port(const bool reuse) {
+        int tmp = reuse;
+        impl::set_option(_socket, option::so_reuseport, &tmp, sizeof(tmp));
+    }
+
+    bool socket::reuse_port() const {
+        int res = false;
+        std::size_t len = sizeof(res);
+        impl::get_option(_socket, option::so_reuseport, &res, len);
+        return res;
+    }
+
     bool socket::operator==(const socket &other) const {
         return _socket == other._socket;
     }

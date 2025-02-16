@@ -27,6 +27,20 @@ namespace netsock {
         void wait_read() const;
         void wait_send() const;
 
+        void send_buffer(std::size_t bytes);
+        [[nodiscard]] std::size_t send_buffer() const;
+        void recv_buffer(std::size_t bytes);
+        [[nodiscard]] std::size_t recv_buffer() const;
+        void send_timeout(std::chrono::milliseconds timeout);
+        [[nodiscard]] std::chrono::milliseconds send_timeout() const;
+        void recv_timeout(std::chrono::milliseconds timeout);
+        [[nodiscard]] std::chrono::milliseconds recv_timeout() const;
+
+        void reuse_address(bool reuse);
+        [[nodiscard]] bool reuse_address() const;
+        void reuse_port(bool reuse);
+        [[nodiscard]] bool reuse_port() const;
+
         [[nodiscard]] netsock::socket &socket();
         [[nodiscard]] const netsock::socket &socket() const;
     private:
@@ -61,6 +75,20 @@ namespace netsock {
         [[nodiscard]] bool can_send() const;
         void wait_read() const;
         void wait_send() const;
+
+        void send_buffer(std::size_t bytes);
+        [[nodiscard]] std::size_t send_buffer() const;
+        void recv_buffer(std::size_t bytes);
+        [[nodiscard]] std::size_t recv_buffer() const;
+        void send_timeout(std::chrono::milliseconds timeout);
+        [[nodiscard]] std::chrono::milliseconds send_timeout() const;
+        void recv_timeout(std::chrono::milliseconds timeout);
+        [[nodiscard]] std::chrono::milliseconds recv_timeout() const;
+
+        void reuse_address(bool reuse);
+        [[nodiscard]] bool reuse_address() const;
+        void reuse_port(bool reuse);
+        [[nodiscard]] bool reuse_port() const;
 
         [[nodiscard]] netsock::socket &socket();
         [[nodiscard]] const netsock::socket &socket() const;

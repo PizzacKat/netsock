@@ -34,6 +34,11 @@ namespace netsock {
         [[nodiscard]] bool listening() const;
         [[nodiscard]] bool pending() const;
 
+        void reuse_address(bool reuse);
+        [[nodiscard]] bool reuse_address() const;
+        void reuse_port(bool reuse);
+        [[nodiscard]] bool reuse_port() const;
+
         void close();
 
         [[nodiscard]] netsock::socket &socket();
