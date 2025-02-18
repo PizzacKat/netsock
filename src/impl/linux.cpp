@@ -322,8 +322,11 @@ namespace netsock::impl {
 
     int poll(const socket_t socket, const int events, const std::chrono::milliseconds timeout) {
         pollfd fd{(int)socket, map_poll_flags(events), 0};
-        if (poll(&fd, 1, (int)timeout.count()) < 0)
+        const int result = poll(&fd, 1, (int)timeout.count());
+        if (result < 0)
             _throw_and_set_code(socket_error("poll"));
+        if (result == 0)
+            return 0;
         return fd.revents;
     }
 
