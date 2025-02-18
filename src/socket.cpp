@@ -126,10 +126,6 @@ namespace netsock {
         return impl::poll(_socket, events, timeout);
     }
 
-    void socket::wait_read() const {
-        while ((poll(pollin) & pollin) == 0);
-    }
-
     bool socket::can_read() const {
         return poll(pollin, poll_nowait) & pollin;
     }
@@ -138,8 +134,16 @@ namespace netsock {
         return poll(pollout, poll_nowait) & pollout;
     }
 
+    bool socket::hanged_up() const {
+        return poll(pollout, poll_nowait) & pollhang;
+    }
+
+    void socket::wait_read() const {
+        while (poll(pollin) == 0);
+    }
+
     void socket::wait_send() const {
-        while ((poll(pollout) & pollout) == 0);
+        while (poll(pollout) == 0);
     }
 
     socket_address socket::address() const {
@@ -191,7 +195,7 @@ namespace netsock {
     }
 
     void socket::reuse_address(const bool reuse) {
-        int tmp = reuse;
+        const int tmp = reuse;
         impl::set_option(_socket, option::so_reuseaddr, &tmp, sizeof(tmp));
     }
 
@@ -203,7 +207,7 @@ namespace netsock {
     }
 
     void socket::reuse_port(const bool reuse) {
-        int tmp = reuse;
+        const int tmp = reuse;
         impl::set_option(_socket, option::so_reuseport, &tmp, sizeof(tmp));
     }
 
