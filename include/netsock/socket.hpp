@@ -49,6 +49,7 @@ namespace netsock {
         [[nodiscard]] int poll(int events, std::chrono::milliseconds timeout = poll_wait) const;
         [[nodiscard]] bool can_read() const;
         [[nodiscard]] bool can_send() const;
+        [[nodiscard]] bool hanged_up() const;
         void wait_read() const;
         void wait_send() const;
 
