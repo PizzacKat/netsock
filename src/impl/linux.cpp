@@ -114,7 +114,7 @@ namespace netsock::impl {
     }
 
     static int map_poll_events(const short events) {
-        return (events & POLLIN ? pollin : 0) | (events & POLLOUT ? pollout : 0) | (events & POLLERR ? pollerr : 0);
+        return (events & POLLIN ? pollin : 0) | (events & POLLOUT ? pollout : 0) | (events & POLLERR ? pollerr : 0) | (events & POLLHUP ? pollhang : 0);
     }
 
     static bool is_safe(const int code) {
@@ -327,7 +327,7 @@ namespace netsock::impl {
             _throw_and_set_code(socket_error("poll"));
         if (result == 0)
             return 0;
-        return fd.revents;
+        return map_poll_events(fd.revents);
     }
 
     void set_blocking(const socket_t socket, const bool blocking) {

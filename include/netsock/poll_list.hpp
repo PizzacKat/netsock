@@ -5,7 +5,7 @@
 
 namespace netsock {
     enum poll_flag {
-        pollin = 0x1, pollout = 0x2, pollerr = 0x4
+        pollin = 0x1, pollout = 0x2, pollerr = 0x4, pollhang = 0x8
     };
 
     struct poll_entry {
