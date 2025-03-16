@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.29)
 project(netsock)
 
+set(BUILD_SHARED_LIBS TRUE)
+
 set(CMAKE_CXX_STANDARD 20)
 
 if (WIN32)
@@ -21,19 +23,18 @@ set(src src/socket.cpp
         src/tcp_stream.cpp
 )
 
-if (BUILD_SHARED_LIBS)
-    set(CMAKE_DEBUG_POSTFIX  "-d")
-    set(CMAKE_RELEASE_POSTFIX "")
-    target_compile_options(netsock PUBLIC "-fPIC")
-
-else ()
-    set(CMAKE_DEBUG_POSTFIX  "-ds")
-    set(CMAKE_RELEASE_POSTFIX "-s")
-endif ()
-
 add_library(netsock
         ${src}
         ${impl}
 )
 
 target_include_directories(netsock PUBLIC include)
+
+if (BUILD_SHARED_LIBS)
+    set(CMAKE_DEBUG_POSTFIX  "-d")
+    set(CMAKE_RELEASE_POSTFIX "")
+    target_compile_options(netsock PUBLIC "-fPIC")
+else ()
+    set(CMAKE_DEBUG_POSTFIX  "-ds")
+    set(CMAKE_RELEASE_POSTFIX "-s")
+endif ()
