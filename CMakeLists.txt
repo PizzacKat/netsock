@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.29)
 project(netsock)
 
-set(BUILD_SHARED_LIBS TRUE)
+option(BUILD_SHARED_LIBS "Build shared libraries" FALSE)
 
 set(CMAKE_CXX_STANDARD 20)
 
