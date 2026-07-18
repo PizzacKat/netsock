@@ -7,6 +7,7 @@
 #include <poll.h>
 #include "netsock/endian.hpp"
 #include <fcntl.h>
+#include <unistd.h>
 
 namespace netsock::impl {
     static int map_af(const address_family family) {

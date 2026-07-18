@@ -38,3 +38,13 @@ else ()
     set(CMAKE_DEBUG_POSTFIX  "-ds")
     set(CMAKE_RELEASE_POSTFIX "-s")
 endif ()
+
+install(
+    TARGETS netsock
+    DESTINATION lib64
+)
+
+install(
+    DIRECTORY include/netsock
+    DESTINATION include
+)
